@@ -8,17 +8,29 @@ from src.get_all import *
 from dotenv import load_dotenv
 from discord.ext import commands
 from src.utils import searchSong, random_25
-import youtube_dl
+import yt_dlp as youtube_dl
 
-FFMPEG_OPTIONS = {
-	'before_options':
-	'-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-	'options': [
-		'ffmpeg', '-i', './assets/sample.mp4', '-vn', '-f', 'mp3',
-		'./assets/sample.mp3'
-	]
+# Suppress noise from yt-dlp
+youtube_dl.utils.bug_reports_message = lambda: ''
+
+ytdl_format_options = {
+	'format': 'bestaudio/best',
+	'extractaudio': True,
+	'noplaylist': True,
+	'keepvideo': False,
+	'postprocessors': [{
+		'key': 'FFmpegExtractAudio',
+		'preferredcodec': 'opus',
+		'preferredquality': '192'
+	}]
 }
-YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
+
+ffmpeg_options = {
+	'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+	'options': '-vn'
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
 class SongQueueCog(commands.Cog):
@@ -79,68 +91,99 @@ class SongQueueCog(commands.Cog):
 				f"ENIGMA: ({ctx.author.name} /leave) Left voice channel {left_name}"
 			)
 		else:
-			# Ignore
+			# Ignore (not connected to a voice channel)
 			await ctx.send("I am currently not connected to a voice channel")
 			BotState.logger.info(
 				f"ENIGMA: ({ctx.author.name} /leave) Ignored (not connected to a voice channel)"
 			)
 
 	"""
-	Function for handling resume capability
-	"""
-
-	@commands.command(name='pause', help='Pauses the song')
-	async def resume(self, ctx):
-		voice_client = ctx.message.guild.voice_client
-		if voice_client.is_paused():
-			await voice_client.resume()
-		else:
-			await ctx.send("The bot was not playing anything before this. Use play command")
-
-	"""
 		Function to stop playing the music
 	"""
 
-	@commands.command(name='unpause', help='Unpauses the song')
-	async def stop(self, ctx):
+	@commands.command(name='pause', help='Pauses the song')
+	async def pause(self, ctx):
 		voice_client = ctx.message.guild.voice_client
-		if voice_client.is_playing():
-			voice_client.stop()
+		if voice_client:
+			if voice_client.is_playing():
+				if not voice_client.is_paused():
+					await voice_client.pause()
+					await ctx.send("Pausing music")
+					BotState.logger.info(
+						f"ENIGMA: ({ctx.author.name} /pause) Paused music"
+					)
+				else:
+					await ctx.send("I am already paused")
+					BotState.logger.info(
+						f"ENIGMA: ({ctx.author.name} /pause) Ignored (already paused)"
+					)
+			else:
+				await ctx.send("I am currently not playing anything")
+				BotState.logger.info(
+					f"ENIGMA: ({ctx.author.name} /pause) Ignored (not playing music)"
+				)
 		else:
-			await ctx.send("The bot is not playing anything at the moment.")
+			await ctx.send("I am currently not connected to a voice channel")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /pause) Ignored (not connected to a voice channel)"
+			)
+
+	"""
+	Function for handling resume capability
+	"""
+
+	@commands.command(name='unpause', help='unpauses the song')
+	async def unpause(self, ctx):
+		voice_client = ctx.message.guild.voice_client
+		if voice_client:
+			if voice_client.is_playing():
+				if voice_client.is_paused():
+					await voice_client.resume()
+					await ctx.send("Resuming music")
+					BotState.logger.info(
+						f"ENIGMA: ({ctx.author.name} /unpause) Paused music"
+					)
+				else:
+					await ctx.send("I am already playing music")
+					BotState.logger.info(
+						f"ENIGMA: ({ctx.author.name} /unpause) Ignored (already playing music)"
+					)
+			else:
+				await ctx.send("I am currently not playing anything")
+				BotState.logger.info(
+					f"ENIGMA: ({ctx.author.name} /unpause) Ignored (not playing music)"
+				)
+		else:
+			await ctx.send("I am currently not connected to a voice channel")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /unpause) Ignored (not connected to a voice channel)"
+			)
 
 	"""
 	Function for playing a custom song
 	"""
 
-	@commands.command(name='play_custom', help='To play custom song')
-	async def play_custom(self, ctx):
-		user_message = str(ctx.message.content)
-		song_name = user_message.split(' ', 1)[1]
-		await self.play_song(song_name, ctx)
+	@commands.command(name='queue', help='queue a custom song')
+	async def queue(self, ctx, *, song_name):
+		voice_client = ctx.message.guild.voice_client
+
+
 
 	"""
 	Helper function for playing song on the voice channel
 	"""
 
-	async def play_song(self, song_name, ctx):
-		# First stop whatever the bot is playing
-		await self.stop(ctx)
-		try:
-			server = ctx.message.guild
-			voice_channel = server.voice_client
-			url = searchSong(song_name)
-			async with ctx.typing():
-				with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-					info = ydl.extract_info(url, download=False)
-					I_URL = info['formats'][0]['url']
-					source = await discord.FFmpegOpusAudio.from_probe(
-						I_URL, **FFMPEG_OPTIONS)
-					voice_channel.play(source)
-					voice_channel.is_playing()
-			await ctx.send('**Now playing:** {}'.format(song_name))
-		except Exception as e:
-			await ctx.send("The bot is not connected to a voice channel.")
+	@staticmethod
+	async def play_song(ctx, query):
+		# Search for the song on YouTube
+		info = ytdl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
+		url = info['url']
+
+		# Play the audio stream
+		ctx.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options),
+							  after=lambda e: print(f'Finished playing: {e}'))
+
+		await ctx.send(f"Now playing: **{info['title']}**")
 
 	"""
 	Helper function to handle empty song queue
@@ -181,8 +224,6 @@ class SongQueueCog(commands.Cog):
 			await voice_client.pause()
 		else:
 			await ctx.send("The bot is not playing anything at the moment.")
-
-
 
 	"""
 	Function to display all the songs in the queue
