@@ -87,38 +87,57 @@ class RecommendCog(commands.Cog):
 		number_emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 		control_emojis = {'🆕': 'new', '⏹️': 'stop'}
 
+		recommended_songs = self.generate_recommendations(BotState.song_queue)
+		if not recommended_songs:
+			await ctx.send(embed=discord.Embed(title="No Recommendations Found", description="Try different selections.", color=0xff0000))
+			return
+
+		description = "\n".join(f"{number_emojis[i]} {song}" for i, song in enumerate(recommended_songs))
+		embed = discord.Embed(title="Recommended Songs", description=description, color=0x00ff00)
+		msg = await ctx.send(embed=embed)
+
+		for emoji in number_emojis[:len(recommended_songs)] + list(control_emojis.keys()):
+			await msg.add_reaction(emoji)
+
+		# Reaction-based interaction loop
 		while True:
-			recommended_songs = self.generate_recommendations(BotState.song_queue)
-			if not recommended_songs:
-				await ctx.send(embed=discord.Embed(title="No Recommendations Found", description="Try different selections.", color=0xff0000))
-				return
-
-			description = "\n".join(f"{number_emojis[i]} {song}" for i, song in enumerate(recommended_songs))
-			embed = discord.Embed(title="Recommended Songs", description=description, color=0x00ff00)
-			msg = await ctx.send(embed=embed)
-
-			for emoji in number_emojis[:len(recommended_songs)] + list(control_emojis.keys()):
-				await msg.add_reaction(emoji)
-
 			def check(reaction, user):
 				return user == ctx.author and reaction.message.id == msg.id and (str(reaction.emoji) in number_emojis[:len(recommended_songs)] + list(control_emojis.keys()))
 
 			try:
-				reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=300.0, check=check)
 				if str(reaction.emoji) in control_emojis:
 					action = control_emojis[str(reaction.emoji)]
 					if action == 'new':
-						continue
+						# Clear previous reactions and repost the embed for a new set of recommendations
+						await msg.clear_reactions()
+						recommended_songs = self.generate_recommendations(BotState.song_queue)
+						if not recommended_songs:
+							await ctx.send("No further recommendations found.")
+							break
+						description = "\n".join(f"{number_emojis[i]} {song}" for i, song in enumerate(recommended_songs))
+						embed = discord.Embed(title="New Recommended Songs", description=description, color=0x00ff00)
+						await msg.edit(embed=embed)
+						for emoji in number_emojis[:len(recommended_songs)] + list(control_emojis.keys()):
+							await msg.add_reaction(emoji)
 					elif action == 'stop':
+						await ctx.send(embed=discord.Embed(title="Ending recommendation session", description="Use '/recommend' command for music recommendation", color=0xff0000))
 						break
 				else:
 					# Add selected song to the queue
 					index = number_emojis.index(str(reaction.emoji))
-					BotState.song_queue.append(recommended_songs[index])
+					song_details = recommended_songs[index].split(" by ")
+					track_artist = song_details[1].rsplit(" (", 1)
+					song_dict = {
+						'track_name': song_details[0],
+						'artist_name': track_artist[0],
+						'genre': track_artist[1].strip(")")
+					}
+					BotState.song_queue.append(song_dict)
 					await ctx.send(embed=discord.Embed(title="Song Added", description=f"Added {recommended_songs[index]}", color=0x00ff00))
-					break
+
 			except asyncio.TimeoutError:
-				await ctx.send(embed=discord.Embed(title="Timeout", description="No response received.", color=0xff0000))
+				await ctx.send("Timeout occurred. No response received.")
 				break
 
 	"""
