@@ -28,7 +28,22 @@ This function returns 10 songs within different genre for generating the poll fo
 """
 def get_songs_by_genre(n=10):
     all_songs = pd.read_csv("./data/songs.csv")
-    sampled_songs = (all_songs.groupby('genre').head(1)).sample(n, replace=True)  # Ensure unique genres
+    unique_songs = all_songs.drop_duplicates(subset=['track_name', 'artist'])
+    sampled_songs = pd.DataFrame()  # use a DataFrame to collect samples
+
+    # to keep track of what has been added
+    sampled_ids = set()
+
+    while len(sampled_songs) < n:
+        song = unique_songs.sample(1)
+        # creating a tuple identifier
+        song_id = (song['track_name'].iloc[0], song['artist'].iloc[0])
+
+        if song_id not in sampled_ids:
+            sampled_ids.add(song_id)
+            # safely concatenate without duplication
+            sampled_songs = pd.concat([sampled_songs, song])
+
     return sampled_songs
 
 

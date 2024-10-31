@@ -9,10 +9,12 @@ from src.get_all import get_songs_by_genre
 
 
 class RecommendCog(commands.Cog):
-	"""
-	    Function to generate poll for playing the recommendations
-	"""
+	def __init__(self, bot):
+		self.bot = bot  # Storing the bot instance in the cog
 
+	"""
+	Function to generate poll for playing the recommendations
+	"""
 	@commands.command(name='poll', help='Poll for recommendation')
 	async def poll(self, ctx):
 		number_emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
@@ -60,38 +62,50 @@ class RecommendCog(commands.Cog):
 	"""
 	This function returns recommended songs based on the songs that the user selected.
 	"""
-	@staticmethod
-	def recommend(self, input_songs):
-		# removing all songs with count = 1
-		songs = get_all_songs()
-		songs = songs.groupby('genre').filter(lambda x: len(x) > 0)
-		# creating dictionary of song track_names and genre
-		playlist = dict(zip(songs['track_name'], songs['genre']))
-		# creating dictionary to count the frequency of each genre
-		freq = {}
-		for item in songs['genre']:
-			if (item in freq):
-				freq[item] += 1
-			else:
-				freq[item] = 1
-		# create list of all songs from the input genre
-		selected_list = []
-		output = []
-		for input in input_songs:
-			if input in playlist.keys():
-				for key, value in playlist.items():
-					if playlist[input] == value:
-						selected_list.append(key)
-				selected_list.remove(input)
-		if (len(selected_list) >= 10):
-			output = random.sample(selected_list, 10)
-		else:
-			extra_songs = 10 - len(selected_list)
-			song_names = songs['track_name'].to_list()
-			song_names_filtered = [x for x in song_names if x not in selected_list]
-			selected_list.extend(random.sample(song_names_filtered, extra_songs))
-			output = selected_list.copy()
-			return output
+	@commands.command(name='recommend', help='Handle recommendations based on selected songs')
+	async def recommend(self, ctx):
+		if not BotState.song_queue:
+			await ctx.send("No songs have been selected yet. Use /poll to select some songs first.")
+			print("Debug: Song queue in recommend -", BotState.song_queue)  # Debug output
+			return
+		
+		# Displaying the chosen songs
+		chosen_songs_message = "You have chosen the following songs:\n" + "\n".join(BotState.song_queue)
+		await ctx.send(chosen_songs_message)
+		
+		# Generating recommendations based on the chosen songs
+		recommended_songs = self.generate_recommendations(BotState.song_queue)
+		if not recommended_songs:
+			await ctx.send("Could not find any recommendations based on your chosen songs.")
+			return
+		
+		recommendations_message = "Based on your choices, I recommend these songs:\n" + "\n".join(recommended_songs)
+		await ctx.send(recommendations_message)
+		
+		# Asking the user for the next action
+		decision_message = "Would you like to add these songs to your queue (Type 'add') or get a new list (Type 'new')?"
+		await ctx.send(decision_message)
+		
+		# Check for user response
+		def check(m):
+			return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ['add', 'new']
+		
+		try:
+			response = await self.bot.wait_for('message', timeout=60.0, check=check)
+			if response.content.lower() == 'add':
+				BotState.song_queue.extend(recommended_songs)
+				await ctx.send("Songs added to your queue.")
+			elif response.content.lower() == 'new':
+				BotState.song_queue = recommended_songs
+				await ctx.send("Your queue has been updated with new songs.")
+		except asyncio.TimeoutError:
+			await ctx.send("No response received. If you'd like to perform any actions, please use the command again.")
+
+	def generate_recommendations(self, selected_songs):
+		# Assuming you have some logic to generate recommendations
+		# This is a placeholder function that should contain your recommendation algorithm
+		# For example, based on genre, popularity, etc.
+		return ["Song 1", "Song 2", "Song 3"]  # Sample output
 
 	@staticmethod
 	async def setup(client):
