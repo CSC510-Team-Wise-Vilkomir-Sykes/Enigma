@@ -47,15 +47,23 @@ class RecommendCog(commands.Cog):
 				emoji_index = number_emojis.index(str(reaction.emoji))
 				if emoji_index < len(ten_random_songs) and ten_random_songs.iloc[emoji_index]["track_name"] not in selected_songs:
 					selected_songs.append(ten_random_songs.iloc[emoji_index]["track_name"])
-					await ctx.send(f"Added to favorites: {ten_random_songs.iloc[emoji_index]['track_name']} by {ten_random_songs.iloc[emoji_index]['artist']} ({ten_random_songs.iloc[emoji_index]['genre']})")
+					favorite_embed = discord.Embed(
+						title="Added to Favorites",
+						description=f"{ten_random_songs.iloc[emoji_index]['track_name']} by {ten_random_songs.iloc[emoji_index]['artist']} ({ten_random_songs.iloc[emoji_index]['genre']})",
+						color=0x00FF00
+					)
+					await ctx.send(embed=favorite_embed)
 			except asyncio.TimeoutError:
 				break
 
 		if selected_songs:
-			bot_message = "Selected songs are: " + ' , '.join(selected_songs)
-			await ctx.send(bot_message)
-			recommended_songs = self.recommend(selected_songs)
-			BotState.song_queue = recommended_songs
+			summary_embed = discord.Embed(
+				title="Selected Songs",
+				description=" , ".join(selected_songs),
+				color=0x31FF00
+			)
+			BotState.song_queue = selected_songs.copy()
+			await ctx.send(embed=summary_embed)
 		else:
 			await ctx.send("No songs were selected.")
 
@@ -65,48 +73,86 @@ class RecommendCog(commands.Cog):
 	@commands.command(name='recommend', help='Handle recommendations based on selected songs')
 	async def recommend(self, ctx):
 		if not BotState.song_queue:
-			await ctx.send("No songs have been selected yet. Use /poll to select some songs first.")
+			no_songs_embed = discord.Embed(
+				title="No Songs Selected",
+				description="No songs have been selected yet. Use /poll to select some songs first.",
+				color=0xff0000
+			)
+			await ctx.send(embed=no_songs_embed)
 			print("Debug: Song queue in recommend -", BotState.song_queue)  # Debug output
 			return
-		
-		# Displaying the chosen songs
-		chosen_songs_message = "You have chosen the following songs:\n" + "\n".join(BotState.song_queue)
-		await ctx.send(chosen_songs_message)
 		
 		# Generating recommendations based on the chosen songs
 		recommended_songs = self.generate_recommendations(BotState.song_queue)
 		if not recommended_songs:
-			await ctx.send("Could not find any recommendations based on your chosen songs.")
+			no_recommendations_embed = discord.Embed(
+				title="No Recommendations Found",
+				description="Could not find any recommendations based on your chosen songs.",
+				color=0xff0000
+			)
+			await ctx.send(embed=no_recommendations_embed)
 			return
 		
-		recommendations_message = "Based on your choices, I recommend these songs:\n" + "\n".join(recommended_songs)
-		await ctx.send(recommendations_message)
+		recommendations_embed = discord.Embed(
+			title="Recommended Songs",
+			description="Based on your choices, I recommend these songs:\n" + "\n".join(recommended_songs),
+			color=0x00ff00
+		)
+		await ctx.send(embed=recommendations_embed)
 		
 		# Asking the user for the next action
-		decision_message = "Would you like to add these songs to your queue (Type 'add') or get a new list (Type 'new')?"
-		await ctx.send(decision_message)
+		decision_embed = discord.Embed(
+			title="What's Next?",
+			description="Would you like to add these songs to your queue or get a new list? Type 'add' to add or 'new' for a new list.",
+			color=0x0000ff
+		)
+		await ctx.send(embed=decision_embed)
 		
 		# Check for user response
 		def check(m):
 			return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ['add', 'new']
-		
+        
 		try:
 			response = await self.bot.wait_for('message', timeout=60.0, check=check)
 			if response.content.lower() == 'add':
 				BotState.song_queue.extend(recommended_songs)
-				await ctx.send("Songs added to your queue.")
+				added_embed = discord.Embed(
+					title="Songs Added",
+					description="Songs added to your queue.",
+					color=0x00ff00
+				)
+				await ctx.send(embed=added_embed)
 			elif response.content.lower() == 'new':
-				BotState.song_queue = recommended_songs
-				await ctx.send("Your queue has been updated with new songs.")
+                # Generate a new set of recommendations
+				new_recommended_songs = self.generate_recommendations(BotState.song_queue)
+				if new_recommended_songs:
+					new_recommendations_embed = discord.Embed(
+						title="New Recommended Songs",
+						description="Based on your previous choices, here are new recommendations:\n" + "\n".join(new_recommended_songs),
+						color=0x00ff00
+					)
+					await ctx.send(embed=new_recommendations_embed)
+					BotState.song_queue = new_recommended_songs  # Update the queue with new recommendations
+				else:
+					no_new_recommendations_embed = discord.Embed(
+						title="No New Recommendations",
+						description="Could not find any new recommendations based on your chosen songs.",
+						color=0xff0000
+					)
+					await ctx.send(embed=no_new_recommendations_embed)
 		except asyncio.TimeoutError:
-			await ctx.send("No response received. If you'd like to perform any actions, please use the command again.")
+			timeout_embed = discord.Embed(
+				title="Timeout",
+				description="No response received. If you'd like to perform any actions, please use the command again.",
+				color=0xff0000
+			)
+			await ctx.send(embed=timeout_embed)
+
 
 	def generate_recommendations(self, selected_songs):
-		# Assuming you have some logic to generate recommendations
-		# This is a placeholder function that should contain your recommendation algorithm
-		# For example, based on genre, popularity, etc.
+        # Place Holder
 		return ["Song 1", "Song 2", "Song 3"]  # Sample output
-
+	
 	@staticmethod
 	async def setup(client):
 		await client.add_cog(RecommendCog(client))
