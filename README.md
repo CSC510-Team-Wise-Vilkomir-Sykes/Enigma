@@ -58,6 +58,7 @@ If you want to get added to the music server on discord to test the bot, drop an
 
 ## 1. Prerequisites 
 
+  * Modules in requirements.txt may only be compatible with Python 3.10
   * Install FFMPEG from [FFMPEG builds](https://www.gyan.dev/ffmpeg/builds), extract it and add it to your path [How to add FFMPEG to Path](https://www.thewindowsclub.com/how-to-install-ffmpeg-on-windows-10#:~:text=Add%20FFmpeg%20to%20Windows%20path%20using%20Environment%20variables&text=In%20the%20Environment%20Variables%20window,bin%5C%E2%80%9D%20and%20click%20OK.)
 
 ## 2. Running Code
