@@ -144,30 +144,41 @@ class RecommendCog(commands.Cog):
 
 
 	def generate_recommendations(self, selected_songs):
-        # Filter all songs to find matches based on the genre and artist of the selected songs
 		recommendations = []
+		seen_artists = {}  # Correctly initialize as a dictionary
+
+		# Set a limit on how many times an artist can appear in the recommendations
+		artist_limit = 2  # Maximum number of songs from the same artist
+
 		for song in selected_songs:
-			# Extract the genre and artist from the selected song
 			genre, artist = song['genre'], song['artist_name']
 
-			# Find other songs with the same genre and artist
+			# Filter songs that match the genre and are not by the same artist as the input song
 			matched_songs = self.all_songs[
-				(self.all_songs['genre'] == genre) & 
-				(self.all_songs['artist_name'] == artist) &
+				(self.all_songs['genre'] == genre) &
+				(~self.all_songs['artist_name'].isin([artist])) &  # Exclude the same artist of the input song
 				(~self.all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))  # Exclude already selected songs
-			]
+			].copy()
 
-			# Add found songs to recommendations, ensure no duplicates
-			for idx, matched_song in matched_songs.iterrows():
+			# Shuffle the matched songs to prevent bias
+			matched_songs = matched_songs.sample(frac=1).reset_index(drop=True)
+
+			# Iterate through the matched songs and add them to recommendations if they meet the criteria
+			for _, matched_song in matched_songs.iterrows():
 				song_info = f"{matched_song['track_name']} by {matched_song['artist_name']} ({matched_song['genre']})"
-				if song_info not in recommendations:
+				artist_count = seen_artists.get(matched_song['artist_name'], 0)
+
+				if song_info not in recommendations and artist_count < artist_limit:
 					recommendations.append(song_info)
-			
-			# Limit the number of recommendations if necessary
+					seen_artists[matched_song['artist_name']] = artist_count + 1
+
+				if len(recommendations) >= 10:
+					break
+
 			if len(recommendations) >= 10:
 				break
 
-		return recommendations[:10]  # Return up to 10 recommendations
+		return recommendations[:10]  # Limit to 10 recommendations
 	
 	@staticmethod
 	async def setup(client):
