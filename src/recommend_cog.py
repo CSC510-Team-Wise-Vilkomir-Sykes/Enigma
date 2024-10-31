@@ -1,16 +1,19 @@
 import discord
 from discord.ext import commands
+
 import random
 import asyncio
 from src.bot_state import BotState
 from src.get_all import get_all_songs
 from src.utils import random_25
 from src.get_all import get_songs_by_genre
+import pandas as pd
 
 
 class RecommendCog(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot  # Storing the bot instance in the cog
+		self.all_songs = pd.read_csv("./data/tcc_ceds_music.csv")
 
 	"""
 	Function to generate poll for playing the recommendations
@@ -27,7 +30,7 @@ class RecommendCog(commands.Cog):
 		
 		# Display song name, artist, and genre
 		song_list_message = ""
-		for index, (track_name, artist, genre) in enumerate(zip(ten_random_songs["track_name"], ten_random_songs["artist"], ten_random_songs["genre"]), start=1):
+		for index, (track_name, artist, genre) in enumerate(zip(ten_random_songs["track_name"], ten_random_songs["artist_name"], ten_random_songs["genre"]), start=1):
 			song_list_message += f"{number_emojis[index-1]} - {track_name} by {artist} ({genre})\n"
 		
 		poll_embed = discord.Embed(title="Song Selection", description=song_list_message, color=0x31FF00)
@@ -46,23 +49,28 @@ class RecommendCog(commands.Cog):
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
 				emoji_index = number_emojis.index(str(reaction.emoji))
 				if emoji_index < len(ten_random_songs) and ten_random_songs.iloc[emoji_index]["track_name"] not in selected_songs:
-					selected_songs.append(ten_random_songs.iloc[emoji_index]["track_name"])
-					favorite_embed = discord.Embed(
-						title="Added to Favorites",
-						description=f"{ten_random_songs.iloc[emoji_index]['track_name']} by {ten_random_songs.iloc[emoji_index]['artist']} ({ten_random_songs.iloc[emoji_index]['genre']})",
-						color=0x00FF00
-					)
-					await ctx.send(embed=favorite_embed)
+					song_info = {
+                    'track_name': ten_random_songs.iloc[emoji_index]["track_name"],
+                    'artist_name': ten_random_songs.iloc[emoji_index]["artist_name"],
+                    'genre': ten_random_songs.iloc[emoji_index]["genre"]
+                }
+				selected_songs.append(song_info)
+				favorite_embed = discord.Embed(
+					title="Added to Favorites",
+					description=f"{song_info['track_name']} by {song_info['artist_name']} ({song_info['genre']})",
+					color=0x00FF00
+				)
+				await ctx.send(embed=favorite_embed)
 			except asyncio.TimeoutError:
 				break
 
 		if selected_songs:
+			BotState.song_queue = selected_songs.copy()
 			summary_embed = discord.Embed(
 				title="Selected Songs",
-				description=" , ".join(selected_songs),
+				description=" , ".join([song['track_name'] for song in selected_songs]),
 				color=0x31FF00
 			)
-			BotState.song_queue = selected_songs.copy()
 			await ctx.send(embed=summary_embed)
 		else:
 			await ctx.send("No songs were selected.")
@@ -136,8 +144,30 @@ class RecommendCog(commands.Cog):
 
 
 	def generate_recommendations(self, selected_songs):
-		# Place Holder
-		return ["Song 1", "Song 2", "Song 3"]  # Sample output
+        # Filter all songs to find matches based on the genre and artist of the selected songs
+		recommendations = []
+		for song in selected_songs:
+			# Extract the genre and artist from the selected song
+			genre, artist = song['genre'], song['artist_name']
+
+			# Find other songs with the same genre and artist
+			matched_songs = self.all_songs[
+				(self.all_songs['genre'] == genre) & 
+				(self.all_songs['artist_name'] == artist) &
+				(~self.all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))  # Exclude already selected songs
+			]
+
+			# Add found songs to recommendations, ensure no duplicates
+			for idx, matched_song in matched_songs.iterrows():
+				song_info = f"{matched_song['track_name']} by {matched_song['artist_name']} ({matched_song['genre']})"
+				if song_info not in recommendations:
+					recommendations.append(song_info)
+			
+			# Limit the number of recommendations if necessary
+			if len(recommendations) >= 10:
+				break
+
+		return recommendations[:10]  # Return up to 10 recommendations
 	
 	@staticmethod
 	async def setup(client):
