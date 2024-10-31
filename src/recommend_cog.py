@@ -4,6 +4,7 @@ import random
 from src.bot_state import BotState
 from src.get_all import get_all_songs
 from src.utils import random_25
+from src.get_all import get_songs_by_genre
 
 
 class RecommendCog(commands.Cog):
@@ -16,30 +17,35 @@ class RecommendCog(commands.Cog):
 		reactions = ['👍', '👎']
 		selected_songs = []
 		count = 0
-		bot_message = "Select song preferences by reaction '👍' or '👎' to the choices. \nSelect 3 songs"
+		bot_message = "React '👍' to the songs you like."
 		await ctx.send(bot_message)
-		ten_random_songs = random_25()
-		for ele in zip(ten_random_songs["track_name"],
-					   ten_random_songs["artist"]):
-			bot_message = str(ele[0]) + " By " + str(ele[1])
-			description = []
-			poll_embed = discord.Embed(title=bot_message,
-									   color=0x31FF00,
-									   description=''.join(description))
+		
+		# Fetch 10 songs from different genres
+		ten_random_songs = get_songs_by_genre(10)
+
+		for ele in zip(ten_random_songs["track_name"], ten_random_songs["artist"]):
+			bot_message = f"{ele[0]} By {ele[1]}"
+			poll_embed = discord.Embed(title=bot_message, color=0x31FF00)
 			react_message = await ctx.send(embed=poll_embed)
-			for reaction in reactions[:len(reactions)]:
+			
+			for reaction in reactions:
 				await react_message.add_reaction(reaction)
-			res, user = await self.bot.wait_for('reaction_add')
-			if (res.emoji == u'👍'):
+			
+			# This loop should ideally handle reactions specifically for each song
+			res, user = await self.bot.wait_for('reaction_add', check=lambda r, u: r.message.id == react_message.id and u == ctx.author)
+			if str(res.emoji) == '👍':
 				selected_songs.append(str(ele[0]))
 				count += 1
-			if (count == 3):
-				bot_message = "Selected songs are : " + \
-							  ' , '.join(selected_songs)
-				await ctx.send(bot_message)
-				break
-		recommended_songs = self.recommend(selected_songs)
-		BotState.song_queue = recommended_songs
+				if count == 3:
+					break
+
+		if selected_songs:
+			bot_message = "Selected songs are : " + ' , '.join(selected_songs)
+			await ctx.send(bot_message)
+			recommended_songs = self.recommend(selected_songs)
+			BotState.song_queue = recommended_songs
+		else:
+			await ctx.send("No songs were selected.")
 		# await self.play_song(BotState.song_queue[0], ctx)
 		# ^-- ignore this probably (all /poll needs to do is add songs to the queue
 
