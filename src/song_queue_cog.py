@@ -3,11 +3,11 @@ This file is responsible for all bot commands regarding songs such /poll for gen
 /next_song for playing next song and so on
 """
 import discord
+from src.bot_state import BotState
 from src.get_all import *
 from dotenv import load_dotenv
 from discord.ext import commands
 from src.utils import searchSong, random_25
-from src.songs_queue import Songs_Queue
 import youtube_dl
 
 FFMPEG_OPTIONS = {
@@ -21,9 +21,9 @@ FFMPEG_OPTIONS = {
 YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
 
 
-class Songs(commands.Cog):
+class SongQueueCog(commands.Cog):
     """
-    Cog for bot that handles all commands related to songs
+    Cog for bot that handles all commands related to song queues
     """
 
     def __init__(self, bot):
@@ -93,18 +93,7 @@ class Songs(commands.Cog):
     """
 
     async def handle_empty_queue(self, ctx):
-        try:
-            songs_queue
-        except NameError:
-            await ctx.send(
-                "No recommendations present. First generate recommendations using /poll"
-            )
-            return True
-        if songs_queue.get_len() == 0:
-            await ctx.send(
-                "No recommendations present. First generate recommendations using /poll"
-            )
-            return True
+        # TODO: Refactor without Song_Queue data structure
         return False
 
     """
@@ -115,7 +104,7 @@ class Songs(commands.Cog):
     async def next_song(self, ctx):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
-            await self.play_song(songs_queue.next_song(), ctx)
+            await self.play_song(BotState.song_queue[0], ctx)
 
     """
     Function to play the previous song in the queue
@@ -125,7 +114,7 @@ class Songs(commands.Cog):
     async def play(self, ctx):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
-            await self.play_song(songs_queue.prev_song(), ctx)
+            await self.play_song(BotState.song_queue[0], ctx)
 
     """
     Function to pause the music that is playing
@@ -139,41 +128,7 @@ class Songs(commands.Cog):
         else:
             await ctx.send("The bot is not playing anything at the moment.")
 
-    """
-    Function to generate poll for playing the recommendations
-    """
 
-    @commands.command(name='poll', help='Poll for recommendation')
-    async def poll(self, ctx):
-        reactions = ['👍', '👎']
-        selected_songs = []
-        count = 0
-        bot_message = "Select song preferences by reaction '👍' or '👎' to the choices. \nSelect 3 songs"
-        await ctx.send(bot_message)
-        ten_random_songs = random_25()
-        for ele in zip(ten_random_songs["track_name"],
-                       ten_random_songs["artist"]):
-            bot_message = str(ele[0]) + " By " + str(ele[1])
-            description = []
-            poll_embed = discord.Embed(title=bot_message,
-                                       color=0x31FF00,
-                                       description=''.join(description))
-            react_message = await ctx.send(embed=poll_embed)
-            for reaction in reactions[:len(reactions)]:
-                await react_message.add_reaction(reaction)
-            res, user = await self.bot.wait_for('reaction_add')
-            if (res.emoji == u'👍'):
-                selected_songs.append(str(ele[0]))
-                count += 1
-            if (count == 3):
-                bot_message = "Selected songs are : " + \
-                    ' , '.join(selected_songs)
-                await ctx.send(bot_message)
-                break
-        global songs_queue
-        recommended_songs = recommend(selected_songs)
-        songs_queue = Songs_Queue(recommended_songs)
-        await self.play_song(songs_queue.next_song(), ctx)
 
     """
     Function to display all the songs in the queue
@@ -184,7 +139,7 @@ class Songs(commands.Cog):
     async def queue(self, ctx):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
-            queue, index = songs_queue.return_queue()
+            queue, index = BotState.song_queue, 0
             await ctx.send("Queue of recommendations: ")
             for i in range(len(queue)):
                 if i == index:
@@ -200,7 +155,7 @@ class Songs(commands.Cog):
     async def shuffle(self, ctx):
         empty_queue = await self.handle_empty_queue(ctx)
         if not empty_queue:
-            songs_queue.shuffle_queue()
+            random.shuffle(BotState.song_queue)
             await ctx.send("Playlist shuffled")
 
     """
@@ -211,14 +166,9 @@ class Songs(commands.Cog):
     async def add_song(self, ctx):
         user_message = str(ctx.message.content)
         song_name = user_message.split(' ', 1)[1]
-        songs_queue.add_to_queue(song_name)
+        BotState.song_queue.append(song_name)
         await ctx.send("Song added to queue")
 
-
-"""
-    Function to add the cog to the bot
-"""
-
-
-async def setup(client):
-    await client.add_cog(Songs(client))
+    @staticmethod
+    async def setup(client):
+        await client.add_cog(SongQueueCog(client))
