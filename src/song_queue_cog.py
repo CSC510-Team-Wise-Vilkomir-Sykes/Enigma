@@ -90,6 +90,7 @@ class SongQueueCog(commands.Cog):
 			# Stop audio stream if there is one
 			if bot_voice_state.is_playing():
 				bot_voice_state.stop()
+			BotState.current_song_playing = None
 
 			await bot_voice_state.disconnect()
 			await ctx.send(f"Left voice channel: {left_name}")
@@ -111,7 +112,7 @@ class SongQueueCog(commands.Cog):
 	async def pause(self, ctx):
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
-			if voice_client.is_playing():
+			if BotState.current_song_playing is not None:
 				if not voice_client.is_paused():
 					voice_client.pause()
 					await ctx.send("Pausing music")
@@ -142,7 +143,7 @@ class SongQueueCog(commands.Cog):
 	async def unpause(self, ctx):
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
-			if voice_client.is_playing():
+			if BotState.current_song_playing is not None:
 				if voice_client.is_paused():
 					voice_client.resume()
 					await ctx.send("Resuming music")
@@ -255,21 +256,37 @@ class SongQueueCog(commands.Cog):
 			await self.play_song(ctx, next_song)
 
 	"""
-	Function to display all the songs in the queue
+	Function to display all the songs in the queue, as well as currently playing
 	"""
 
 	@commands.command(name='view',
 					  help='Show active queue of recommendations')
 	async def view(self, ctx):
-		empty_queue = await self.handle_empty_queue(ctx)
-		if not empty_queue:
-			queue, index = BotState.song_queue, 0
-			await ctx.send("Queue of recommendations: ")
-			for i in range(len(queue)):
-				if i == index:
-					await ctx.send("Currently Playing: " + queue[i])
-				else:
-					await ctx.send(queue[i])
+		msg = ""
+		if BotState.current_song_playing is not None:
+
+			voice_client = ctx.message.guild.voice_client
+			if voice_client.is_paused():
+				pause_str = " **[PAUSED]**"
+			else:
+				pause_str = ""
+
+			msg += f"Now playing: {BotState.current_song_playing}{pause_str}\n\n"
+		else:
+			msg += "Currently not playing anything\n\n"
+
+		if len(BotState.song_queue) == 0:
+			msg += "No songs in queue. Try /queue <query> to get started"
+		else:
+			msg += "Current Queue:\n"
+			for i, song in enumerate(BotState.song_queue, start=1):
+				msg += f"{i}. {song}\n"
+
+		await ctx.send(msg)
+
+		BotState.logger.info(
+			f"ENIGMA: ({ctx.author.name} /view) Acknowledged"
+		)
 
 	"""
 	Function to shuffle songs in the queue
@@ -277,10 +294,15 @@ class SongQueueCog(commands.Cog):
 
 	@commands.command(name='shuffle', help='To shuffle songs in queue')
 	async def shuffle(self, ctx):
-		empty_queue = await self.handle_empty_queue(ctx)
-		if not empty_queue:
+		if len(BotState.song_queue) == 0:
+			await ctx.send(f"No songs in queue. Try /queue <query> to get started")
+		else:
 			random.shuffle(BotState.song_queue)
-			await ctx.send("Playlist shuffled")
+			await ctx.send(f"Shuffled! Do /view to see the current queue")
+
+		BotState.logger.info(
+			f"ENIGMA: ({ctx.author.name} /shuffle) Acknowledged"
+		)
 
 	@staticmethod
 	async def setup(client):
