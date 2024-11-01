@@ -7,13 +7,14 @@ Installation Guides:
   * [Git Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   * [IDE Installation Guide (Pycharm)](https://www.jetbrains.com/help/pycharm/installation-guide.html)
   * Install FFMPEG from [FFMPEG builds](https://www.gyan.dev/ffmpeg/builds), extract it and add it to your path [How to add FFMPEG to Path](https://www.thewindowsclub.com/how-to-install-ffmpeg-on-windows-10#:~:text=Add%20FFmpeg%20to%20Windows%20path%20using%20Environment%20variables&text=In%20the%20Environment%20Variables%20window,bin%5C%E2%80%9D%20and%20click%20OK.)
+  * [Set up a bot and invite it to your server](https://discordpy.readthedocs.io/en/stable/discord.html)
 
 ## 2. Running Code
 
 First, clone the repository and cd into the folder:
 
 ```
-$ git clone git@github.com:rahulgautam21/Enigma.git
+$ git clone https://github.com/CSC510-Team87/Enigma.git
 $ cd Enigma
 ```
 
