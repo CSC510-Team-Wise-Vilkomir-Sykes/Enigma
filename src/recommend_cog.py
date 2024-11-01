@@ -13,7 +13,6 @@ import pandas as pd
 class RecommendCog(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot  # Storing the bot instance in the cog
-		self.all_songs = pd.read_csv("./data/tcc_ceds_music.csv")
 
 	"""
 	Function to generate poll for playing the recommendations
@@ -61,11 +60,11 @@ class RecommendCog(commands.Cog):
 					color=0x00FF00
 				)
 				await ctx.send(embed=favorite_embed)
+				BotState.song_queue = selected_songs.copy()
 			except asyncio.TimeoutError:
 				break
 
 		if selected_songs:
-			BotState.song_queue = selected_songs.copy()
 			summary_embed = discord.Embed(
 				title="Selected Songs",
 				description=" , ".join([song['track_name'] for song in selected_songs]),
@@ -121,7 +120,7 @@ class RecommendCog(commands.Cog):
 						for emoji in number_emojis[:len(recommended_songs)] + list(control_emojis.keys()):
 							await msg.add_reaction(emoji)
 					elif action == 'stop':
-						await ctx.send(embed=discord.Embed(title="Ending recommendation session", description="Use '/recommend' command for music recommendation", color=0xff0000))
+						await ctx.send(embed=discord.Embed(title="Ending recommendation session", description="Use /recommend command for music recommendation", color=0xff0000))
 						break
 				else:
 					# Add selected song to the queue
@@ -147,6 +146,9 @@ class RecommendCog(commands.Cog):
 		recommendations = []
 		seen_artists = {}  # Dictionary to track the number of songs recommended per artist
 
+		# Fetch all songs dynamically
+		all_songs = get_all_songs()
+
 		# Aggregate genres from all selected songs
 		genres = {song['genre'] for song in selected_songs}
 
@@ -154,10 +156,10 @@ class RecommendCog(commands.Cog):
 		artist_limit = 2
 
 		# Filter songs that match the genres collected and are not by the same artists as the input songs
-		matched_songs = self.all_songs[
-			self.all_songs['genre'].isin(genres) &
-			(~self.all_songs['artist_name'].isin([song['artist_name'] for song in selected_songs])) &
-			(~self.all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))
+		matched_songs = all_songs[
+			all_songs['genre'].isin(genres) &
+			(~all_songs['artist_name'].isin([song['artist_name'] for song in selected_songs])) &
+			(~all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))
 		].copy()
 
 		# Shuffle the matched songs to prevent bias
