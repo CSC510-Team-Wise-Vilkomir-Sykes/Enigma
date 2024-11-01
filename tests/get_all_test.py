@@ -10,7 +10,6 @@ from src.recommend_cog import *
 
 warnings.filterwarnings("ignore")
 
-
 def generate_test_songs_data():
     # Generate a DataFrame simulating songs with different genres
     data = {
