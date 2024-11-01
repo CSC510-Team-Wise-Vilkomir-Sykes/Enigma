@@ -1,7 +1,7 @@
 import unittest
 import warnings
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import sys
 sys.path.append("./")
 
@@ -72,5 +72,3 @@ class Tests(unittest.TestCase):
         songs = get_all_songs()
         print(songs)
         self.assertTrue(len(songs) != 0)
-
-    

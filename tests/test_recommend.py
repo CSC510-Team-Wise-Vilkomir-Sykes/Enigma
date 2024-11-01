@@ -7,6 +7,7 @@ sys.path.append("./")
 
 from src.recommend_cog import RecommendCog
 from src.bot_state import BotState
+from src.get_all import *
 
 @pytest.fixture
 def recommend_cog():
@@ -90,3 +91,27 @@ def test_max_recommendation_limit(songs_df):
     selected_songs = [{'track_name': 'Song8', 'artist_name': 'Artist4', 'genre': 'Country'}]
     recommendations = RecommendCog.generate_recommendations(songs_df, selected_songs)
     assert len(recommendations) <= 10, "Should not return more than 10 recommendations"
+
+# Define a function to test mapping emojis to song indices
+def map_emojis_to_songs(song_list):
+    number_emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    return {emoji: song_list[index] for index, emoji in enumerate(number_emojis[:len(song_list)])}
+
+def test_emoji_song_mapping():
+    # Simulated song list
+    songs = [
+        {'track_name': 'Song1', 'artist_name': 'Artist1', 'genre': 'Pop'},
+        {'track_name': 'Song2', 'artist_name': 'Artist2', 'genre': 'Rock'},
+        {'track_name': 'Song3', 'artist_name': 'Artist3', 'genre': 'Jazz'}
+    ]
+
+    # Run the mapping function
+    emoji_song_map = map_emojis_to_songs(songs)
+
+    # Assert the mapping is correct
+    expected_map = {
+        '1️⃣': {'track_name': 'Song1', 'artist_name': 'Artist1', 'genre': 'Pop'},
+        '2️⃣': {'track_name': 'Song2', 'artist_name': 'Artist2', 'genre': 'Rock'},
+        '3️⃣': {'track_name': 'Song3', 'artist_name': 'Artist3', 'genre': 'Jazz'}
+    }
+    assert emoji_song_map == expected_map, "Emoji to song mapping should match the expected output."
