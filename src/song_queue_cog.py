@@ -7,6 +7,8 @@ from src.bot_state import BotState
 from src.get_all import *
 from dotenv import load_dotenv
 from discord.ext import commands
+
+from src.song import Song
 from src.utils import searchSong, random_25
 import yt_dlp as youtube_dl
 
@@ -85,6 +87,10 @@ class SongQueueCog(commands.Cog):
 			# Disconnect from the voice channel
 			left_name = bot_voice_state.channel.name
 
+			# Stop audio stream if there is one
+			if bot_voice_state.is_playing():
+				bot_voice_state.stop()
+
 			await bot_voice_state.disconnect()
 			await ctx.send(f"Left voice channel: {left_name}")
 			BotState.logger.info(
@@ -107,7 +113,7 @@ class SongQueueCog(commands.Cog):
 		if voice_client:
 			if voice_client.is_playing():
 				if not voice_client.is_paused():
-					await voice_client.pause()
+					voice_client.pause()
 					await ctx.send("Pausing music")
 					BotState.logger.info(
 						f"ENIGMA: ({ctx.author.name} /pause) Paused music"
@@ -138,7 +144,7 @@ class SongQueueCog(commands.Cog):
 		if voice_client:
 			if voice_client.is_playing():
 				if voice_client.is_paused():
-					await voice_client.resume()
+					voice_client.resume()
 					await ctx.send("Resuming music")
 					BotState.logger.info(
 						f"ENIGMA: ({ctx.author.name} /unpause) Paused music"
@@ -164,74 +170,97 @@ class SongQueueCog(commands.Cog):
 	"""
 
 	@commands.command(name='queue', help='queue a custom song')
-	async def queue(self, ctx, *, song_name):
-		voice_client = ctx.message.guild.voice_client
+	async def queue(self, ctx, *, query):
+		if query and query.strip():  # check for empty queries
+			BotState.song_queue.append(Song(query))
+			await ctx.send(f"Adding song to end of queue: {query}")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /queue) Queued song query '{query}'"
+			)
+		else:
+			await ctx.send("Please specify a youtube query that you would like to queue")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /queue) Ignored (missing query)"
+			)
 
+	@commands.command(name='insert', help='insert a custom song')
+	async def insert(self, ctx, *, idx, query):
+		# users will assume queue index starts at 1, not 0
+		idx = int(idx) - 1
 
+		# check for empty queries
+		if query and query.strip():
+			BotState.song_queue.insert(idx, Song(query))
+			await ctx.send("Adding song to end of queue:")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /insert) Inserted song query '{query}' at position {idx}"
+			)
+		else:
+			await ctx.send("Please specify a youtube query that you would like to queue")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /insert) Ignored (missing query)"
+			)
 
 	"""
 	Helper function for playing song on the voice channel
 	"""
 
-	@staticmethod
-	async def play_song(ctx, query):
-		# Search for the song on YouTube
-		info = ytdl.extract_info(f"ytsearch:{query}", download=False)['entries'][0]
-		url = info['url']
+	async def play_song(self, ctx, song):
+		voice_client = ctx.message.guild.voice_client
+		if voice_client:
+			# Search for the song on YouTube
+			info = ytdl.extract_info(f"ytsearch:{song}", download=False)['entries'][0]
+			url = info['url']
 
-		# Play the audio stream
-		ctx.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options),
-							  after=lambda e: print(f'Finished playing: {e}'))
+			if voice_client.is_playing():
+				voice_client.stop()
+				BotState.logger.info(
+					f"ENIGMA: Terminating current song {BotState.current_song_playing}"
+				)
 
-		await ctx.send(f"Now playing: **{info['title']}**")
+			# Play the audio stream
+			ctx.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options),
+								  after=lambda _: self.on_play_query_end(ctx))
+			BotState.current_song_playing = song
 
-	"""
-	Helper function to handle empty song queue
-	"""
+			await ctx.send(f"Now playing: **{song}**")
+			BotState.logger.info(
+				f"ENIGMA: Playing {song}"
+			)
+		else:
+			await ctx.send("I am currently not connected to a voice channel")
+			BotState.logger.info(
+				f"ENIGMA: Ignored (not connected to a voice channel)"
+			)
 
-	async def handle_empty_queue(self, ctx):
-		# TODO: Refactor without Song_Queue data structure
-		return False
+	async def on_play_query_end(self, ctx):
+		await ctx.send(f"Finished playing {BotState.current_song_playing}")
+		BotState.logger.info(f"ENIGMA: Finished playing {BotState.current_song_playing}")
+		await self.next(ctx)
+
 
 	"""
 	Function to play the next song in the queue
 	"""
 
-	@commands.command(name='next_song', help='To play next song in queue')
-	async def next_song(self, ctx):
-		empty_queue = await self.handle_empty_queue(ctx)
-		if not empty_queue:
-			await self.play_song(BotState.song_queue[0], ctx)
-
-	"""
-	Function to play the previous song in the queue
-	"""
-
-	@commands.command(name='prev_song', help='To play prev song in queue')
-	async def play(self, ctx):
-		empty_queue = await self.handle_empty_queue(ctx)
-		if not empty_queue:
-			await self.play_song(BotState.song_queue[0], ctx)
-
-	"""
-	Function to pause the music that is playing
-	"""
-
-	@commands.command(name='pause', help='This command pauses the song')
-	async def pause(self, ctx):
-		voice_client = ctx.message.guild.voice_client
-		if voice_client.is_playing():
-			await voice_client.pause()
+	@commands.command(name='next', help='Immediately jump to the next song in the queue')
+	async def next(self, ctx):
+		if len(BotState.song_queue) == 0: # Check that there's a song in the queue
+			await ctx.send(f"Please add a song to the queue first")
+			BotState.logger.info(
+				f"ENIGMA: ({ctx.author.name} /next) Ignored (empty queue)"
+			)
 		else:
-			await ctx.send("The bot is not playing anything at the moment.")
+			next_song = BotState.song_queue.pop(0)
+			await self.play_song(ctx, next_song)
 
 	"""
 	Function to display all the songs in the queue
 	"""
 
-	@commands.command(name='queue',
+	@commands.command(name='view',
 					  help='Show active queue of recommendations')
-	async def queue(self, ctx):
+	async def view(self, ctx):
 		empty_queue = await self.handle_empty_queue(ctx)
 		if not empty_queue:
 			queue, index = BotState.song_queue, 0
@@ -252,17 +281,6 @@ class SongQueueCog(commands.Cog):
 		if not empty_queue:
 			random.shuffle(BotState.song_queue)
 			await ctx.send("Playlist shuffled")
-
-	"""
-	Function to add custom song to the queue
-	"""
-
-	@commands.command(name='add_song', help='To add custom song to the queue')
-	async def add_song(self, ctx):
-		user_message = str(ctx.message.content)
-		song_name = user_message.split(' ', 1)[1]
-		BotState.song_queue.append(song_name)
-		await ctx.send("Song added to queue")
 
 	@staticmethod
 	async def setup(client):
