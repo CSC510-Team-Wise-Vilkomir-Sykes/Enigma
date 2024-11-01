@@ -9,15 +9,15 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://zenodo.org/badge/533639670.svg)](https://zenodo.org/badge/latestdoi/533639670)
 [![Build Status](https://github.com/rahulgautam21/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/rahulgautam21/Enigma/actions)
-[![GitHub Release](https://img.shields.io/github/release/rahulgautam21/Enigma.svg)](https://github.com/rahulgautam21/Enigma/releases)
-[![GitHub Repo Size](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg)](https://img.shields.io/github/repo-size/rahulgautam21/Enigma.svg)
+[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![GitHub contributors](https://img.shields.io/badge/contributors-4-green)](https://github.com/SASWAT123/Enigma/graphs/contributors)
+[![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)
 [![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)
 [![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
 [![Formatting python code](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml)
-[![codecov](https://codecov.io/gh/rahulgautam21/Enigma/branch/main/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/rahulgautam21/Enigma)
+[![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/main/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
 
 </div>
 
