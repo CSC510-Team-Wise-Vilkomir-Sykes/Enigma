@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import random
 import asyncio
 from src.bot_state import BotState
 from src.get_all import get_all_songs
@@ -45,7 +46,7 @@ class RecommendCog(commands.Cog):
 
 		while len(selected_songs) < 3:
 			try:
-				reaction = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
 				emoji_index = number_emojis.index(str(reaction.emoji))
 				if emoji_index < len(ten_random_songs) and ten_random_songs.iloc[emoji_index]["track_name"] not in [song.track_name for song in selected_songs]:
 					song = Song(
