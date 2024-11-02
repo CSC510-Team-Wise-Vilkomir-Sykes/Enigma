@@ -8,6 +8,7 @@ warnings.filterwarnings("ignore")
 
 from src import utils
 
+
 class Tests(unittest.TestCase):
 
     # For testing the searchSong() method. Given a song name as input, should return the youtube link.
@@ -17,8 +18,7 @@ class Tests(unittest.TestCase):
         expected_link = "https://www.youtube.com/watch?v=E07s5ZYygMg"
         self.assertTrue(actual_link == expected_link)
 
-
-# For testing the random_25() method. Checking if the list returned is of length 25.
+    # For testing the random_25() method. Checking if the list returned is of length 25.
 
     def test_random_25(self):
         random_songs = utils.random_25()
