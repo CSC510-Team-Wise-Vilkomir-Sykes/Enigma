@@ -3,6 +3,8 @@ This file is responsible for all bot commands regarding songs such /poll for gen
 /next_song for playing next song and so on
 """
 import discord
+from discord.ext.commands import bot
+
 from src.bot_state import BotState
 from src.get_all import *
 from dotenv import load_dotenv
@@ -46,63 +48,39 @@ class SongQueueCog(commands.Cog):
 	@commands.command(name='join', help='Joins the voice channel of the user')
 	async def join(self, ctx):
 		# Check if the user is in a voice channel
-
 		if ctx.author.voice and ctx.author.voice.channel:
 			user_channel = ctx.author.voice.channel
-			bot_voice_state = ctx.guild.voice_client
+			voice_client = ctx.guild.voice_client
 
 			# Check if the bot is already in a voice channel
-			if bot_voice_state:
-				if bot_voice_state.channel == user_channel:
-					await ctx.send(f"I am already in this voice channel ({user_channel.name})")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /join) Ignored (already in voice channel {user_channel.name})"
-					)
+			if BotState.is_in_voice_channel():
+				if voice_client.channel == user_channel:
+					BotState.log_and_send(ctx, f"I am already in this voice channel ({user_channel.name})")
 				else:
 					# Move to the new channel
-					await bot_voice_state.move_to(user_channel)
-					await ctx.send(f"Switched to voice channel: {user_channel.name}")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /join) Switched to voice channel {user_channel.name}"
-					)
+					await voice_client.move_to(user_channel)
+					BotState.log_and_send(ctx, f"Switched to voice channel: {user_channel.name}")
 			else:
 				# Join the user's voice channel
 				await user_channel.connect()
 				await ctx.send(f"Joined voice channel: {user_channel.name}")
-				BotState.logger.info(
-					f"ENIGMA: ({ctx.author.name} /join) Joined voice channel {user_channel.name}"
-				)
+				BotState.log_and_send(ctx, f"Joined voice channel: {user_channel.name}")
 
 		else:
-			await ctx.send("Please join a voice channel before executing /join")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /join) Ignored (not in voice channel)"
-			)
+			BotState.log_and_send(ctx, "Please join a voice channel before executing /join")
 
 	@commands.command(name='leave', help='Leaves the voice channel')
 	async def leave(self, ctx):
-		bot_voice_state = ctx.guild.voice_client
+		voice_client = ctx.guild.voice_client
 
-		if bot_voice_state and bot_voice_state.is_connected():
-			# Disconnect from the voice channel
-			left_name = bot_voice_state.channel.name
+		if BotState.is_in_voice_channel():
+			left_name = voice_client.channel.name
 
-			# Stop audio stream if there is one
-			if bot_voice_state.is_playing():
-				bot_voice_state.stop()
-			BotState.current_song_playing = None
+			await voice_client.disconnect()
 
-			await bot_voice_state.disconnect()
-			await ctx.send(f"Left voice channel: {left_name}")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /leave) Left voice channel {left_name}"
-			)
+			BotState.log_and_send(ctx, f"Left voice channel: {left_name}")
 		else:
-			# Ignore (not connected to a voice channel)
-			await ctx.send("I am currently not connected to a voice channel")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /leave) Ignored (not connected to a voice channel)"
-			)
+			BotState.log_and_send(ctx, "I am currently not connected to a voice channel")
 
 	"""
 		Function to stop playing the music
@@ -112,28 +90,16 @@ class SongQueueCog(commands.Cog):
 	async def pause(self, ctx):
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
-			if BotState.current_song_playing is not None:
-				if not voice_client.is_paused():
-					voice_client.pause()
-					await ctx.send("Pausing music")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /pause) Paused music"
-					)
+			if BotState.is_in_use():
+				if not BotState.is_paused():
+					BotState.pause(voice_client)
+					BotState.log_and_send(ctx, "Pausing music")
 				else:
-					await ctx.send("I am already paused")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /pause) Ignored (already paused)"
-					)
+					BotState.log_and_send(ctx, "I am already paused")
 			else:
-				await ctx.send("I am currently not playing anything")
-				BotState.logger.info(
-					f"ENIGMA: ({ctx.author.name} /pause) Ignored (not playing music)"
-				)
+				BotState.log_and_send(ctx, "I am currently not playing anything")
 		else:
-			await ctx.send("I am currently not connected to a voice channel")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /pause) Ignored (not connected to a voice channel)"
-			)
+			BotState.log_and_send(ctx, "I am currently not connected to a voice channel")
 
 	"""
 	Function for handling resume capability
@@ -143,28 +109,16 @@ class SongQueueCog(commands.Cog):
 	async def unpause(self, ctx):
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
-			if BotState.current_song_playing is not None:
-				if voice_client.is_paused():
-					voice_client.resume()
-					await ctx.send("Resuming music")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /unpause) Paused music"
-					)
+			if BotState.is_in_use():
+				if not BotState.is_paused():
+					BotState.unpause(voice_client)
+					BotState.log_and_send(ctx, "Unpausing music")
 				else:
-					await ctx.send("I am already playing music")
-					BotState.logger.info(
-						f"ENIGMA: ({ctx.author.name} /unpause) Ignored (already playing music)"
-					)
+					BotState.log_and_send(ctx, "I am already unpaused")
 			else:
-				await ctx.send("I am currently not playing anything")
-				BotState.logger.info(
-					f"ENIGMA: ({ctx.author.name} /unpause) Ignored (not playing music)"
-				)
+				BotState.log_and_send(ctx, "I am currently not playing anything")
 		else:
-			await ctx.send("I am currently not connected to a voice channel")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /unpause) Ignored (not connected to a voice channel)"
-			)
+			BotState.log_and_send(ctx, "I am currently not connected to a voice channel")
 
 	"""
 	Function for playing a custom song
@@ -172,41 +126,77 @@ class SongQueueCog(commands.Cog):
 
 	@commands.command(name='queue', help='queue a custom song')
 	async def queue(self, ctx, *, query):
-		if query and query.strip():  # check for empty queries
-			BotState.song_queue.append(Song(query))
-			await ctx.send(f"Adding song to end of queue: {query}")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /queue) Queued song query '{query}'"
-			)
-		else:
-			await ctx.send("Please specify a youtube query that you would like to queue")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /queue) Ignored (missing query)"
-			)
+		song = self.ensure_song(ctx, query)
+		if song is not None:
+			# remember that commands expect queue idx to start at 1
+			if self.insert_song(ctx, len(BotState.song_queue) + 1, song):
+				BotState.log_and_send(ctx, f"Queued song: {song}")
 
 	@commands.command(name='insert', help='insert a custom song')
 	async def insert(self, ctx, *, idx, query):
-		# users will assume queue index starts at 1, not 0
-		idx = int(idx) - 1
+		song = self.ensure_song(ctx, query)
+		if song is not None:
+			if self.insert_song(ctx, idx, song):
+				BotState.log_and_send(ctx, f"Inserted song {song} as track number {idx}")
 
-		# check for empty queries
-		if query and query.strip():
-			BotState.song_queue.insert(idx, Song(query))
-			await ctx.send("Adding song to end of queue:")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /insert) Inserted song query '{query}' at position {idx}"
-			)
+	@commands.command(name="insertfront", help="insert a custom song at the front")
+	async def insertfront(self, ctx, *, query):
+		# remember that commands expect queue idx to start at 1
+		await self.insert(ctx, 1, query)
+
+	@staticmethod
+	def insert_song(ctx, idx, song):
+		idx = SongQueueCog.ensure_insert_number(ctx, idx)
+		if idx is not None:
+			BotState.song_queue.insert(idx, song)
+			return True
+		return False
+
+	@staticmethod
+	def delete_track(ctx, idx):
+		idx = SongQueueCog.ensure_track_number(ctx, idx)
+		if idx is not None:
+			removed_song = BotState.song_queue.pop(idx)
+			return removed_song
+		return None
+
+	@staticmethod
+	def ensure_song(ctx, query):
+		query = query.strip()
+		if query:
+			return Song(query)
 		else:
-			await ctx.send("Please specify a youtube query that you would like to queue")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /insert) Ignored (missing query)"
-			)
+			BotState.log_and_send(ctx, "Please enter a song")
+			return None
+
+	@staticmethod
+	def ensure_track_number(ctx, idx):
+		try:
+			safe_idx = int(idx) - 1
+			if safe_idx < 0 or safe_idx >= len(BotState.song_queue):
+				raise ValueError
+			return safe_idx
+		except ValueError:
+			BotState.log_and_send(ctx, f'"{idx}" is not a valid track number')
+			return None
+
+	@staticmethod
+	def ensure_insert_number(ctx, idx):
+		try:
+			safe_idx = int(idx) - 1
+			if safe_idx < 0 or safe_idx > len(BotState.song_queue):
+				raise ValueError
+			return safe_idx
+		except ValueError:
+			BotState.log_and_send(ctx, f'"{idx}" is not a valid track number')
+			return None
+
 
 	"""
 	Helper function for playing song on the voice channel
 	"""
 
-	async def play_song(self, ctx, song):
+	def play_song(self, ctx, song):
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
 			# Search for the song on YouTube
@@ -215,29 +205,22 @@ class SongQueueCog(commands.Cog):
 
 			if voice_client.is_playing():
 				voice_client.stop()
-				BotState.logger.info(
-					f"ENIGMA: Terminating current song {BotState.current_song_playing}"
-				)
+				BotState.log_command(ctx, f"Terminating current song {BotState.current_song_playing}")
 
 			# Play the audio stream
 			ctx.voice_client.play(discord.FFmpegPCMAudio(url, **ffmpeg_options),
 								  after=lambda _: self.on_play_query_end(ctx))
 			BotState.current_song_playing = song
 
-			await ctx.send(f"Now playing: **{song}**")
-			BotState.logger.info(
-				f"ENIGMA: Playing {song}"
-			)
+			BotState.log_and_send(ctx, f"Now playing: **{song}**")
 		else:
-			await ctx.send("I am currently not connected to a voice channel")
-			BotState.logger.info(
-				f"ENIGMA: Ignored (not connected to a voice channel)"
-			)
+			BotState.log_and_send(ctx, "I am currently not connected to a voice channel")
 
 	async def on_play_query_end(self, ctx):
-		await ctx.send(f"Finished playing {BotState.current_song_playing}")
-		BotState.logger.info(f"ENIGMA: Finished playing {BotState.current_song_playing}")
-		await self.next(ctx)
+		BotState.log_and_send(ctx, f"Finished playing {BotState.current_song_playing}")
+		BotState.stop(ctx.guild.voice_client)
+		if len(BotState.song_queue) > 0:
+			self.play_next_song(ctx)
 
 
 	"""
@@ -246,14 +229,14 @@ class SongQueueCog(commands.Cog):
 
 	@commands.command(name='next', help='Immediately jump to the next song in the queue')
 	async def next(self, ctx):
-		if len(BotState.song_queue) == 0: # Check that there's a song in the queue
-			await ctx.send(f"Please add a song to the queue first")
-			BotState.logger.info(
-				f"ENIGMA: ({ctx.author.name} /next) Ignored (empty queue)"
-			)
+		self.play_next_song(ctx)
+
+	def play_next_song(self, ctx):
+		if len(BotState.song_queue) == 0:
+			BotState.log_and_send(ctx, f"Please add a song to the queue first")
 		else:
 			next_song = BotState.song_queue.pop(0)
-			await self.play_song(ctx, next_song)
+			self.play_song(ctx, next_song)
 
 	"""
 	Function to display all the songs in the queue, as well as currently playing
@@ -284,9 +267,7 @@ class SongQueueCog(commands.Cog):
 
 		await ctx.send(msg)
 
-		BotState.logger.info(
-			f"ENIGMA: ({ctx.author.name} /view) Acknowledged"
-		)
+		BotState.log_command(ctx, "Acknowledged")
 
 	"""
 	Function to shuffle songs in the queue
@@ -300,9 +281,46 @@ class SongQueueCog(commands.Cog):
 			random.shuffle(BotState.song_queue)
 			await ctx.send(f"Shuffled! Do /view to see the current queue")
 
-		BotState.logger.info(
-			f"ENIGMA: ({ctx.author.name} /shuffle) Acknowledged"
-		)
+		BotState.log_command(ctx, "Acknowledged")
+
+	@commands.command(name='jumpto', help='Jump to a track number')
+	async def jumpto(self, ctx, *, idx):
+		safe_idx = self.ensure_track_number(ctx, idx)
+
+		if safe_idx is not None:
+			# We discard all the songs before idx
+			BotState.song_queue = BotState.song_queue[safe_idx:]
+			BotState.log_and_send(ctx, f"Jumped to track number {idx} in the queue")
+
+	@commands.command(name='move', help='Move the song at the given track number in a different position in the queue')
+	async def move(self, ctx, *, src_idx, dest_idx):
+		# dest_idx is ensured as a track number (0 < idx < size) and not as an insertion number (0 < idx <= size)
+		# this is because when we can only move it to a maximum index of size-1
+
+		safe_dest_idx = self.ensure_track_number(ctx, dest_idx)
+		if safe_dest_idx is not None:
+			moved_song = self.delete_track(ctx, src_idx)
+			if moved_song is not None:
+				# we need to pass in dest_idx again, not safe_dest_idx,
+				# since safe_dest_idx has been converted to 0-starting idx
+				if self.insert_song(ctx, dest_idx, moved_song):
+					BotState.log_and_send(f"Moved {moved_song} from track {src_idx} to track {dest_idx}")
+
+	@commands.command(name='remove', help="Removes the song in the queue at the given track number")
+	async def remove(self, ctx, *, idx):
+		removed_song = self.self.delete_track(ctx, idx)
+		if removed_song is not None:
+			BotState.log_and_send(ctx, f"Removed {removed_song} (track number {idx})")
+
+	@commands.command(name="movefront", help="Moves a song to the front of the queue")
+	async def movefront(self, ctx, *, src_idx):
+		# remember that commands expect queue idx to start at 1
+		await self.move(ctx, src_idx=src_idx, dest_idx=1)
+
+	@commands.command(name="moveback", help="Moves a song to the back of the queue")
+	async def moveback(self, ctx, *, src_idx):
+		# remember that commands expect queue idx to start at 1
+		await self.move(ctx, src_idx=src_idx, dest_idx=len(BotState.song_queue))
 
 	@staticmethod
 	async def setup(client):
