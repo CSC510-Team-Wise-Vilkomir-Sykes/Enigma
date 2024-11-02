@@ -3,6 +3,7 @@ dThis file is the main entry point of the bot
 """
 
 from multiprocessing.util import debug
+import logging
 from src.bot_state import BotState
 import discord
 import os
@@ -18,7 +19,6 @@ from src.song_queue_cog import SongQueueCog
 load_dotenv('.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.all()
-intents.members = True
 client = commands.Bot(command_prefix='/', intents=intents)
 """
 Function that gets executed once the bot is initialized
@@ -29,6 +29,7 @@ Function that gets executed once the bot is initialized
 async def on_ready():
     await SongQueueCog.setup(client)
     await RecommendCog.setup(client)
+    BotState.logger = logging.getLogger("discord")
 
 """
 Function that is executed once any message is received by the bot
