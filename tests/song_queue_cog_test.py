@@ -1,11 +1,11 @@
 import pytest
 import unittest
-from src.song_queue_cog import *
 import warnings
 import sys
 
-sys.path.append("../")
+sys.path.append("./")
 
+from src.song_queue_cog import *
 warnings.filterwarnings("ignore")
 
 

@@ -7,6 +7,7 @@ import logging
 from src.bot_state import BotState
 import discord
 import os
+
 from src.get_all import *
 import re
 from dotenv import load_dotenv
