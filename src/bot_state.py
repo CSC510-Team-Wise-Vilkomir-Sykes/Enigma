@@ -11,7 +11,7 @@ class BotState:
 		cls.logger.info(f"ENIGMA ({ctx.author.name} /{ctx.command.name}) {msg}")
 
 	@classmethod
-	def log_and_send(cls, ctx, msg):
+	async def log_and_send(cls, ctx, msg):
 		await ctx.send(msg)
 		cls.log_command(ctx, msg)
 
@@ -28,10 +28,10 @@ class BotState:
 		return cls._is_in_voice_channel
 
 	@classmethod
-	def set_is_in_voice_channel(cls, is_in_voice_channel):
+	def set_is_in_voice_channel(cls, is_in_voice_channel, voice_client):
 		if is_in_voice_channel != cls._is_in_voice_channel:
 			cls._is_in_voice_channel = is_in_voice_channel
-			cls.stop()
+			cls.stop(voice_client)
 
 	@classmethod
 	def pause(cls, voice_client):

@@ -52,12 +52,13 @@ async def on_message(message):
 async def on_voice_state_update(member, before, after):
 	# Check if the member joining/leaving is the bot
 	if member is member.guild.me:
+		voice_client = member.guild.voice_client
 		if after.channel is None:
-			BotState.set_is_in_voice_channel(False)
+			BotState.set_is_in_voice_channel(False, voice_client)
 		else:
-			BotState.set_is_in_voice_channel(True)
+			BotState.set_is_in_voice_channel(True, voice_client)
 		if before.channel is not after.channel:
-			BotState.pause(member.guild.voice_client)
+			BotState.pause(voice_client)
 
 
 """
