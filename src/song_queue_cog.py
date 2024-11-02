@@ -203,8 +203,8 @@ class SongQueueCog(commands.Cog):
 			info = ytdl.extract_info(f"ytsearch:{song}", download=False)['entries'][0]
 			url = info['url']
 
-			if voice_client.is_playing():
-				voice_client.stop()
+			if BotState.is_in_use():
+				BotState.stop(voice_client)
 				BotState.log_command(ctx, f"Terminating current song {BotState.current_song_playing}")
 
 			# Play the audio stream
@@ -218,9 +218,12 @@ class SongQueueCog(commands.Cog):
 
 	async def on_play_query_end(self, ctx):
 		BotState.log_and_send(ctx, f"Finished playing {BotState.current_song_playing}")
-		BotState.stop(ctx.guild.voice_client)
-		if len(BotState.song_queue) > 0:
-			self.play_next_song(ctx)
+		if BotState.is_looping():
+			self.play_song(ctx, BotState.current_song_playing)
+		else:
+			BotState.stop(ctx.guild.voice_client)
+			if len(BotState.song_queue) > 0:
+				self.play_next_song(ctx)
 
 
 	"""
@@ -321,6 +324,40 @@ class SongQueueCog(commands.Cog):
 	async def moveback(self, ctx, *, src_idx):
 		# remember that commands expect queue idx to start at 1
 		await self.move(ctx, src_idx=src_idx, dest_idx=len(BotState.song_queue))
+
+	@commands.command(name="loop", help="Sets the bot to loop when it plays a song")
+	async def loop(self, ctx):
+		if BotState.is_looping():
+			BotState.log_and_send(ctx, "I am already set to loop")
+		else:
+			BotState.set_is_looping(True)
+			BotState.log_and_send(ctx, "Got it, I will loop songs when they end")
+
+	@commands.command(name="unloop", help="Sets the bot to not loop when it plays a song")
+	async def unloop(self, ctx):
+		if not BotState.is_looping():
+			BotState.log_and_send(ctx, "I am already set to not loop")
+		else:
+			BotState.set_is_looping(False)
+			BotState.log_and_send(ctx, "Got it, I will not loop songs when they end")
+
+	@commands.command(name="replay", help="Will replay the currently playing song once after it ends")
+	async def replay(self, ctx):
+		if not BotState.is_in_use():
+			BotState.log_and_send(ctx, "I am currently not playing any songs")
+		else:
+			if BotState.is_looping():
+				BotState.log_and_send(ctx, "I am already set to loop")
+			else:
+				self.insert_song(ctx, 1, BotState.current_song_playing)
+				BotState.log_and_send(ctx, "Got it, I will add this song to the front of the queue again")
+
+	@commands.command(name="replaynow", help="Will immediately restart the currently playing song")
+	async def replaynow(self, ctx):
+		if not BotState.is_in_use():
+			BotState.log_and_send(ctx, "I am currently not playing any songs")
+		else:
+			self.play_song(ctx, BotState.current_song_playing)
 
 	@staticmethod
 	async def setup(client):

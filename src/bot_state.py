@@ -3,6 +3,7 @@ class BotState:
 	current_song_playing = None
 	_is_paused = False
 	_is_in_voice_channel = False
+	_is_looping = False
 	logger = None
 
 	@classmethod
@@ -53,3 +54,11 @@ class BotState:
 				voice_client.stop()
 			cls.current_song_playing = None
 		cls._is_paused = False
+
+	@classmethod
+	def is_looping(cls):
+		return cls._is_looping
+
+	@classmethod
+	def set_is_looping(cls, is_looping):
+		cls._is_looping = is_looping
