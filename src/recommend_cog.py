@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 
-import random
 import asyncio
 from src.bot_state import BotState
 from src.get_all import get_all_songs
 from src.utils import random_25
 from src.get_all import get_songs_by_genre
 import pandas as pd
+from src.song import Song
 
 
 class RecommendCog(commands.Cog):
@@ -45,18 +45,18 @@ class RecommendCog(commands.Cog):
 
 		while len(selected_songs) < 3:
 			try:
-				reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+				reaction = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
 				emoji_index = number_emojis.index(str(reaction.emoji))
-				if emoji_index < len(ten_random_songs) and ten_random_songs.iloc[emoji_index]["track_name"] not in selected_songs:
-					song_info = {
-                    'track_name': ten_random_songs.iloc[emoji_index]["track_name"],
-                    'artist_name': ten_random_songs.iloc[emoji_index]["artist_name"],
-                    'genre': ten_random_songs.iloc[emoji_index]["genre"]
-                }
-				selected_songs.append(song_info)
+				if emoji_index < len(ten_random_songs) and ten_random_songs.iloc[emoji_index]["track_name"] not in [song.track_name for song in selected_songs]:
+					song = Song(
+        				track_name=ten_random_songs.iloc[emoji_index]["track_name"],
+        				artist_name=ten_random_songs.iloc[emoji_index]["artist_name"],
+        				genre=ten_random_songs.iloc[emoji_index]["genre"]
+    				)
+				selected_songs.append(song)
 				favorite_embed = discord.Embed(
 					title="Added to Favorites",
-					description=f"{song_info['track_name']} by {song_info['artist_name']} ({song_info['genre']})",
+					description=f"{song.track_name} by {song.artist_name} ({song.genre})",
 					color=0x00FF00
 				)
 				await ctx.send(embed=favorite_embed)
@@ -67,7 +67,7 @@ class RecommendCog(commands.Cog):
 		if selected_songs:
 			summary_embed = discord.Embed(
 				title="Selected Songs",
-				description=" , ".join([song['track_name'] for song in selected_songs]),
+				description=" , ".join([song.track_name for song in selected_songs]),
 				color=0x31FF00
 			)
 			await ctx.send(embed=summary_embed)
@@ -125,14 +125,15 @@ class RecommendCog(commands.Cog):
 				else:
 					# Add selected song to the queue
 					index = number_emojis.index(str(reaction.emoji))
-					song_details = recommended_songs[index].split(" by ")
-					track_artist = song_details[1].rsplit(" (", 1)
-					song_dict = {
-						'track_name': song_details[0],
-						'artist_name': track_artist[0],
-						'genre': track_artist[1].strip(")")
-					}
-					BotState.song_queue.append(song_dict)
+					# song_details = recommended_songs[index].split(" by ")
+					song = recommended_songs[index]
+					# track_artist = song_details[1].rsplit(" (", 1)
+					# song_dict = {
+					# 	'track_name': song_details[0],
+					# 	'artist_name': track_artist[0],
+					# 	'genre': track_artist[1].strip(")")
+					# }
+					BotState.song_queue.append(song)
 					await ctx.send(embed=discord.Embed(title="Song Added", description=f"Added {recommended_songs[index]}", color=0x00ff00))
 
 			except asyncio.TimeoutError:
@@ -150,16 +151,20 @@ class RecommendCog(commands.Cog):
 		all_songs = get_all_songs()
 
 		# Aggregate genres from all selected songs
-		genres = {song['genre'] for song in selected_songs}
+		# genres = {song['genre'] for song in selected_songs}
+		genres = {song.genre for song in selected_songs}
 
 		# Set a limit on how many times an artist can appear in the recommendations
 		artist_limit = 2
 
 		# Filter songs that match the genres collected and are not by the same artists as the input songs
 		matched_songs = all_songs[
+			# all_songs['genre'].isin(genres) &
+			# (~all_songs['artist_name'].isin([song['artist_name'] for song in selected_songs])) &
+			# (~all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))
 			all_songs['genre'].isin(genres) &
-			(~all_songs['artist_name'].isin([song['artist_name'] for song in selected_songs])) &
-			(~all_songs['track_name'].isin([song['track_name'] for song in selected_songs]))
+			(~all_songs['artist_name'].isin([song.artist_name for song in selected_songs])) &
+			(~all_songs['track_name'].isin([song.track_name for song in selected_songs]))
 		].copy()
 
 		# Shuffle the matched songs to prevent bias
@@ -167,12 +172,21 @@ class RecommendCog(commands.Cog):
 
 		# Iterate through the matched songs and add them to recommendations if they meet the criteria
 		for _, matched_song in matched_songs.iterrows():
-			song_info = f"{matched_song['track_name']} by {matched_song['artist_name']} ({matched_song['genre']})"
-			artist_count = seen_artists.get(matched_song['artist_name'], 0)
+			# song_info = f"{matched_song['track_name']} by {matched_song['artist_name']} ({matched_song['genre']})"
+			song = Song(
+            	track_name=matched_song['track_name'],
+            	artist_name=matched_song['artist_name'],
+            	genre=matched_song['genre']
+        	)
+			# artist_count = seen_artists.get(matched_song['artist_name'], 0)
+			artist_count = seen_artists.get(song.artist_name, 0)
 
-			if song_info not in recommendations and artist_count < artist_limit:
-				recommendations.append(song_info)
-				seen_artists[matched_song['artist_name']] = artist_count + 1
+			# if song_info not in recommendations and artist_count < artist_limit:
+			# 	recommendations.append(song_info)
+			# 	seen_artists[matched_song['artist_name']] = artist_count + 1
+			if song not in recommendations and artist_count < artist_limit:
+				recommendations.append(song)
+				seen_artists[song.artist_name] = artist_count + 1
 
 			if len(recommendations) >= 10:
 				break
