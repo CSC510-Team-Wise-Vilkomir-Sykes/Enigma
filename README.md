@@ -19,6 +19,13 @@
 [![Formatting python code](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/rahulgautam21/Enigma/actions/workflows/code-formatter.yml)
 [![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/main/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
 
+
+[![Syntax Checker](https://img.shields.io/badge/Syntax_Checker-flake8-white)](https://flake8.pycqa.org/en/latest/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/main/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
+[![DOI](https://zenodo.org/badge/533639670.svg)](https://zenodo.org/badge/latestdoi/533639670)
+[![Code Formatter](https://img.shields.io/badge/Code%20Formatter-Black-000000.svg)](https://github.com/psf/black)
+
 </div>
 
 <p align="center">
