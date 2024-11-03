@@ -3,9 +3,11 @@ dThis file is the main entry point of the bot
 """
 
 from multiprocessing.util import debug
+import logging
 from src.bot_state import BotState
 import discord
 import os
+
 from src.get_all import *
 import re
 from dotenv import load_dotenv
@@ -15,11 +17,10 @@ from src.recommend_cog import RecommendCog
 from src.utils import searchSong
 from src.song_queue_cog import SongQueueCog
 
-load_dotenv('.env')
-TOKEN = os.getenv('DISCORD_TOKEN')
+load_dotenv(".env")
+TOKEN = os.getenv("DISCORD_TOKEN")
 intents = discord.Intents.all()
-intents.members = True
-client = commands.Bot(command_prefix='/', intents=intents)
+client = commands.Bot(command_prefix="/", intents=intents)
 """
 Function that gets executed once the bot is initialized
 """
@@ -29,6 +30,8 @@ Function that gets executed once the bot is initialized
 async def on_ready():
     await SongQueueCog.setup(client)
     await RecommendCog.setup(client)
+    BotState.logger = logging.getLogger("discord")
+
 
 """
 Function that is executed once any message is received by the bot
@@ -41,9 +44,20 @@ async def on_message(message):
         return
     options = set()
 
-    if message.channel.name == 'general':
+    if message.channel.name == "general":
         user_message = str(message.content)
         await client.process_commands(message)
+
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    # Check if the member joining/leaving is the bot
+    if member is member.guild.me:
+        voice_client = member.guild.voice_client
+        if after.channel is None or before.channel is None:
+            BotState.stop(voice_client)
+        elif before.channel is not after.channel:
+            BotState.pause(voice_client)
 
 
 """

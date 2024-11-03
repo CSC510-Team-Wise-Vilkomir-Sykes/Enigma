@@ -1,0 +1,9 @@
+# Configure Black and Ruff.
+
+[tool.black]
+line-length = 88 # line length must be consistent with ruff
+target-version = ['py310']  
+
+[tool.ruff]
+select = ["ALL"] 
+line-length = 88 # line length must be consistent with black

@@ -1,5 +1,9 @@
 import unittest
 
+import sys
+
+sys.path.append("./")
+
 
 class Tests(unittest.TestCase):
 
