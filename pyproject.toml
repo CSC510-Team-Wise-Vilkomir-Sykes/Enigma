@@ -1,4 +1,4 @@
-# configure black and ruff
+# Configure Black and Ruff.
 
 [tool.black]
 line-length = 88 # line length must be consistent with ruff
