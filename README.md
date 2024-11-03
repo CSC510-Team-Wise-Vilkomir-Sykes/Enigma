@@ -7,7 +7,7 @@
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
+# [![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)
 [![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)
