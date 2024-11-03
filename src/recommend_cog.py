@@ -128,7 +128,8 @@ class RecommendCog(commands.Cog):
             return
 
         description = "\n".join(
-            f"{number_emojis[i]} {song}" for i, song in enumerate(recommended_songs)
+            f"{number_emojis[i]} {song.track_name} by {song.artist_name} ({song.genre})"
+            for i, song in enumerate(recommended_songs)
         )
         embed = discord.Embed(
             title="Recommended Songs", description=description, color=0x00FF00
