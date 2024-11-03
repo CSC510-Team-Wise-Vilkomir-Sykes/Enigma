@@ -7,7 +7,6 @@
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![DOI](https://zenodo.org/badge/533639670.svg)](https://zenodo.org/badge/latestdoi/533639670)
 [![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)
 [![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)
@@ -15,7 +14,7 @@
 [![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)
 [![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
-
+[![DOI](https://zenodo.org/badge/533639670.svg)](https://zenodo.org/badge/latestdoi/533639670)
 [![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/main/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
 [![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions)
 [![Code Formatter](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
