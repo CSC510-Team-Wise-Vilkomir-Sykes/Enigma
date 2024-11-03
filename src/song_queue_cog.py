@@ -58,7 +58,7 @@ class SongQueueCog(commands.Cog):
             voice_client = ctx.guild.voice_client
 
             # Check if the bot is already in a voice channel
-            if BotState.is_in_voice_channel():
+            if BotState.is_in_voice_channel(voice_client):
                 if voice_client.channel == user_channel:
                     await BotState.log_and_send(
                         ctx, f"I am already in this voice channel ({user_channel.name})"
@@ -85,9 +85,8 @@ class SongQueueCog(commands.Cog):
     async def leave(self, ctx):
         voice_client = ctx.guild.voice_client
 
-        if BotState.is_in_voice_channel():
+        if BotState.is_in_voice_channel(voice_client):
             left_name = voice_client.channel.name
-
             await voice_client.disconnect()
 
             await BotState.log_and_send(ctx, f"Left voice channel: {left_name}")
@@ -97,8 +96,8 @@ class SongQueueCog(commands.Cog):
             )
 
     """
-		Function to stop playing the music
-	"""
+        Function to stop playing the music
+    """
 
     @commands.command(name="pause", help="Pauses the song")
     async def pause(self, ctx):
@@ -118,8 +117,8 @@ class SongQueueCog(commands.Cog):
             )
 
     """
-	Function for handling resume capability
-	"""
+    Function for handling resume capability
+    """
 
     @commands.command(name="unpause", help="unpauses the song")
     async def unpause(self, ctx):
@@ -139,8 +138,8 @@ class SongQueueCog(commands.Cog):
             )
 
     """
-	Function for playing a custom song
-	"""
+    Function for playing a custom song
+    """
 
     @commands.command(name="queue", help="queue a custom song")
     async def queue(self, ctx, *, query):
@@ -213,8 +212,8 @@ class SongQueueCog(commands.Cog):
             return None
 
     """
-	Helper function for playing song on the voice channel
-	"""
+    Helper function for playing song on the voice channel
+    """
 
     async def play_song(self, ctx, song):
         voice_client = ctx.message.guild.voice_client
@@ -236,8 +235,8 @@ class SongQueueCog(commands.Cog):
             # Play the audio stream
             ctx.voice_client.play(
                 discord.FFmpegPCMAudio(url, **ffmpeg_options),
-                after=lambda _: asyncio.run_coroutine_threadsafe(
-                    self.on_play_query_end(ctx), self.bot.loop
+                after=lambda error: asyncio.run_coroutine_threadsafe(
+                    self.on_play_query_end(ctx, error), self.bot.loop
                 ),
             )
             BotState.current_song_playing = song
@@ -248,19 +247,22 @@ class SongQueueCog(commands.Cog):
                 ctx, "I am currently not connected to a voice channel"
             )
 
-    async def on_play_query_end(self, ctx):
-        BotState.log_command(ctx, "Finished playing song")
-        BotState.stop(ctx.guild.voice_client)
+    async def on_play_query_end(self, ctx, error):
+        voice_client = ctx.guild.voice_client
 
-        if BotState.is_looping():
-            await self.play_song(ctx, BotState.current_song_playing)
-        else:
-            if len(BotState.song_queue) > 0:
-                await self.play_next_song(ctx)
+        BotState.log_command(ctx, "Finished playing song")
+        BotState.stop(voice_client)
+
+        if BotState.is_in_voice_channel(voice_client):
+            if BotState.is_looping():
+                await self.play_song(ctx, BotState.current_song_playing)
+            else:
+                if len(BotState.song_queue) > 0:
+                    await self.play_next_song(ctx)
 
     """
-	Function to play the next song in the queue
-	"""
+    Function to play the next song in the queue
+    """
 
     @commands.command(
         name="next", help="Immediately jump to the next song in the queue"
@@ -279,8 +281,8 @@ class SongQueueCog(commands.Cog):
             await self.play_song(ctx, next_song)
 
     """
-	Function to display all the songs in the queue, as well as currently playing
-	"""
+    Function to display all the songs in the queue, as well as currently playing
+    """
 
     @commands.command(name="view", help="Show active queue of recommendations")
     async def view(self, ctx):
@@ -310,8 +312,8 @@ class SongQueueCog(commands.Cog):
         BotState.log_command(ctx, "Acknowledged")
 
     """
-	Function to shuffle songs in the queue
-	"""
+    Function to shuffle songs in the queue
+    """
 
     @commands.command(name="shuffle", help="To shuffle songs in queue")
     async def shuffle(self, ctx):

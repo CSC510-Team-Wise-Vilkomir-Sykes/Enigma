@@ -2,7 +2,6 @@ class BotState:
     song_queue = []
     current_song_playing = None
     _is_paused = False
-    _is_in_voice_channel = False
     _is_looping = False
     logger = None
 
@@ -24,35 +23,28 @@ class BotState:
         return cls._is_paused
 
     @classmethod
-    def is_in_voice_channel(cls):
-        return cls._is_in_voice_channel
-
-    @classmethod
-    def set_is_in_voice_channel(cls, is_in_voice_channel, voice_client):
-        if is_in_voice_channel != cls._is_in_voice_channel:
-            cls._is_in_voice_channel = is_in_voice_channel
-            cls.stop(voice_client)
+    def is_in_voice_channel(cls, voice_client):
+        return voice_client is not None and voice_client.is_connected()
 
     @classmethod
     def pause(cls, voice_client):
         if not cls._is_paused and cls.is_in_use():
-            if not voice_client.is_paused():
+            if voice_client is not None and not voice_client.is_paused():
                 voice_client.pause()
             cls._is_paused = True
 
     @classmethod
     def unpause(cls, voice_client):
         if cls._is_paused and cls.is_in_use():
-            if voice_client.is_paused():
+            if voice_client is not None and voice_client.is_paused():
                 voice_client.resume()
             cls._is_paused = False
 
     @classmethod
     def stop(cls, voice_client):
-        if cls.is_in_use():
-            if voice_client.is_playing():
-                voice_client.stop()
-            cls.current_song_playing = None
+        if voice_client is not None and cls.is_in_use():
+            voice_client.stop()
+        cls.current_song_playing = None
         cls._is_paused = False
 
     @classmethod
