@@ -33,11 +33,4 @@ jobs:
       run: pip install autopep8
 
     - name: Run autopep8
-      run: autopep8 . --recursive --in-place
-
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v9
-      with:
-        message: 'Apply autopep8 fixes'
-        add: '.'
-      if: github.event_name == 'push' 
+      run: autopep8 --in-place -r .
