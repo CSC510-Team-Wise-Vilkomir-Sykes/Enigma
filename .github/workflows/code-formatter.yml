@@ -29,12 +29,15 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
-    autopep8:
-        runs-on: ubuntu-latest
-        needs: build
+    - name: Install autopep8
+      run: pip install autopep8
 
-        steps:
-            - name: Execute AutoPep8
-              run: |
-                  pip install autopep8
-                  autopep8 --in-place -r .
+    - name: Run autopep8
+      run: autopep8 . --recursive --diff  # This will show the diff. Use '--in-place' to apply changes.
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Apply autopep8 fixes'
+        add: '.'
+      if: github.event_name == 'push'  # This conditional allows auto-commit only on push events.
