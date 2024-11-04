@@ -72,7 +72,7 @@ If you want to get added to the music server on discord to test the bot, drop an
 First, clone the repository and cd into the folder:
 
 ```
-$ git clone git@github.com:rahulgautam21/Enigma.git
+$ git clone https://github.com/CSC510-Team87/Enigma.git
 $ cd Enigma
 ```
 
@@ -123,10 +123,12 @@ Documentation for the code available at - <a href="https://saswat123.github.io/E
 
 <table>
   <tr>
-    Gwen Mason
-    Yi Zhang
-    Kevin Dai
+    <td align="center"><a href="https://github.com/gwenmason125"><img src="" width="75px;" alt=""/><br /><sub><b>Gwen Mason</b></sub></a></td>
+    <td align="center"><a href="https://github.com/yicharlieyi"><img src="" width="75px;" alt=""/><br /><sub><b>Yi Zhang</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/kevindai2002"><img src="" width="75px;" alt=""/><br /><sub><b>Kevin Dai</b></sub></a><br /></td>
+
   </tr>
+</table>
 
 </table>
 
