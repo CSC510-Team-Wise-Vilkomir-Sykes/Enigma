@@ -25,3 +25,12 @@ jobs:
       - name: Run flake8
         run: |
           flake8 .
+          - name: Install Black
+          run: |
+            pip install black
+  
+      - name: Run Black
+        run: black . --check --diff
+
+      - name: Apply Black
+        run: black .
