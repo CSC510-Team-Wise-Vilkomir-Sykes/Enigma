@@ -86,16 +86,13 @@ $ python bot.py
 
 You can now use the discord bot to give music recommendations! Use /help to see all functionalities of bot.
 
-<h1> 🚀 Demo </h1>
+<h1> 🚀 Video 1 - Why you should choose this project for project 3 (Team 87) </h1>
 
+<a href="https://youtu.be/HvIVuy2wMXY">https://youtu.be/HvIVuy2wMXY</a>
 
-https://user-images.githubusercontent.com/20087273/194780603-f163caf6-2c9e-4d74-8fbd-c93f30e8935a.mp4
+<h1> 🚀 Video 2 - New Feature Showcase </h1>
 
-<h1> 🚀 Demo 2 - Group 17 </h1>
-
-
-https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-af2e-a6eead2ccea3.mp4
-
+<a href="https://youtu.be/fvlnV4p7qdk">https://youtu.be/fvlnV4p7qdk</a>
 
 <h1>📍RoadMap </h1>
 
