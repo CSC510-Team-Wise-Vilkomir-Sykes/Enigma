@@ -49,7 +49,7 @@ If you want to get added to the music server on discord to test the bot, drop an
 
 <div>
 <ul>
-  <li>Custom songs are now put into the queue dynamically instead of being played instantly<li>
+  <li>Custom songs are now put into the queue dynamically instead of being played instantly</li>
   <li>The bot is able to be used across several voice channels while still keeping a consistent internal state</li>
   <li>The bot has both instant and delayed replay of songs</li>
   <li>The bot can have songs inserted at any point in the queue</li>
