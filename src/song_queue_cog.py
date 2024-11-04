@@ -44,7 +44,7 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 class SongQueueCog(commands.Cog):
     """
-    Cog for bot that handles all commands related to song queues
+    Cog for bot that handles all commands related to song queues and song playback
     """
 
     def __init__(self, bot):
@@ -52,6 +52,11 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="join", help="Joins the voice channel of the user")
     async def join(self, ctx):
+        """
+        /join will make the bot join/switch to the voice channel the user is in
+
+        :param ctx: the command context
+        """
         # Check if the user is in a voice channel
         if ctx.author.voice and ctx.author.voice.channel:
             user_channel = ctx.author.voice.channel
@@ -83,6 +88,11 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="leave", help="Leaves the voice channel")
     async def leave(self, ctx):
+        """
+        /leave will force the bot to leave its current voice channel
+
+        :param ctx: the command context
+        """
         voice_client = ctx.guild.voice_client
 
         if BotState.is_in_voice_channel(voice_client):
@@ -101,6 +111,12 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="pause", help="Pauses the song")
     async def pause(self, ctx):
+        """
+        /pause will pause the currently playing music
+
+        :param ctx: the command context
+        :return:
+        """
         voice_client = ctx.message.guild.voice_client
         if voice_client:
             if BotState.is_in_use():
@@ -122,6 +138,12 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="unpause", help="unpauses the song")
     async def unpause(self, ctx):
+        """
+        /unpause will unpause the currently playing music
+
+        :param ctx: the command context
+        :return:
+        """
         voice_client = ctx.message.guild.voice_client
         if voice_client:
             if BotState.is_in_use():
@@ -143,6 +165,12 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="queue", help="queue a custom song")
     async def queue(self, ctx, *, query):
+        """
+        /queue will add a song query to the end of the queue
+
+        :param ctx: the command context
+        :param query: the query (song) to queue
+        """
         song = await self.ensure_song(ctx, query)
         if song is not None:
             # remember that commands expect queue idx to start at 1
@@ -151,6 +179,12 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="insert", help="insert a custom song")
     async def insert(self, ctx, *, params):
+        """
+        /insert will insert a song query into an arbitrary point in the queue
+
+        :param ctx: the command context
+        :param params: the index and song query, separated by a space
+        """
         idx, query = params.split(" ", maxsplit=1)
         song = await self.ensure_song(ctx, query)
         if song is not None:
@@ -161,11 +195,24 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="insertfront", help="insert a custom song at the front")
     async def insertfront(self, ctx, *, query):
+        """
+        /insertfront will insert a song into the front of the queue
+
+        :param ctx: the command context
+        :param query: the song to insert
+        """
         # remember that commands expect queue idx to start at 1
         await self.insert(ctx, params=f"1 {query}")
 
     @staticmethod
     async def insert_song(ctx, idx, song):
+        """
+        helper function to insert songs into the queue
+
+        :param ctx: the command context
+        :param idx: the index to add it to
+        :param song: the song object
+        """
         idx = await SongQueueCog.ensure_insert_number(ctx, idx)
         if idx is not None:
             BotState.song_queue.insert(idx, song)
@@ -174,6 +221,12 @@ class SongQueueCog(commands.Cog):
 
     @staticmethod
     async def delete_track(ctx, idx):
+        """
+        helper function to delete songs in the queue
+
+        :param ctx: the command context
+        :param idx: the index to remove
+        """
         idx = await SongQueueCog.ensure_track_number(ctx, idx)
         if idx is not None:
             removed_song = BotState.song_queue.pop(idx)
@@ -182,6 +235,12 @@ class SongQueueCog(commands.Cog):
 
     @staticmethod
     async def ensure_song(ctx, query):
+        """
+        helper function to convert a query into a song object
+
+        :param ctx: the command context
+        :param query: query string to convert
+        """
         query = query.strip()
         if query:
             return Song(query)
@@ -191,6 +250,12 @@ class SongQueueCog(commands.Cog):
 
     @staticmethod
     async def ensure_track_number(ctx, idx):
+        """
+        helper function to ensure a valid track number, then convert it from a list-start-at-1 idx to a list-start-at-0 idx
+
+        :param ctx: the command context
+        :param idx: the index
+        """
         try:
             safe_idx = int(idx) - 1
             if safe_idx < 0 or safe_idx >= len(BotState.song_queue):
@@ -202,6 +267,12 @@ class SongQueueCog(commands.Cog):
 
     @staticmethod
     async def ensure_insert_number(ctx, idx):
+        """
+        helper function to ensure a valid insertion number, then convert it from a list-start-at-1 idx to a list-start-at-0 idx
+
+        :param ctx: the command context
+        :param idx: the index
+        """
         try:
             safe_idx = int(idx) - 1
             if safe_idx < 0 or safe_idx > len(BotState.song_queue):
@@ -211,11 +282,13 @@ class SongQueueCog(commands.Cog):
             await BotState.log_and_send(ctx, f'"{idx}" is not a valid track number')
             return None
 
-    """
-    Helper function for playing song on the voice channel
-    """
-
     async def play_song(self, ctx, song):
+        """
+        helper function for playing a song
+
+        :param ctx: the command context
+        :param idx: the song object to play
+        """
         voice_client = ctx.message.guild.voice_client
         if voice_client:
             # Search for the song on YouTube
@@ -248,6 +321,13 @@ class SongQueueCog(commands.Cog):
             )
 
     async def on_play_query_end(self, ctx, error):
+        """
+        function that runs once a song is terminated or ends normally, will typically play the next song
+        if one is available
+
+        :param ctx: the command context
+        :param error: any error that was thrown during playback
+        """
         voice_client = ctx.guild.voice_client
 
         BotState.log_command(ctx, "Finished playing song")
@@ -260,32 +340,38 @@ class SongQueueCog(commands.Cog):
                 if len(BotState.song_queue) > 0:
                     await self.play_next_song(ctx)
 
-    """
-    Function to play the next song in the queue
-    """
-
     @commands.command(
         name="next", help="Immediately jump to the next song in the queue"
     )
     async def next(self, ctx):
+        """
+        /next will play the next song in the queue if one exists
+
+        :param ctx: the command context
+        """
         if BotState.is_in_use():
             BotState.stop(ctx.guild.voice_client)
         else:
             await self.play_next_song(ctx)
 
     async def play_next_song(self, ctx):
+        """
+        helper function to play the next song if one exists
+
+        :param ctx: the command context
+        """
         if len(BotState.song_queue) == 0:
             await BotState.log_and_send(ctx, f"Please add a song to the queue first")
         else:
             next_song = BotState.song_queue.pop(0)
             await self.play_song(ctx, next_song)
-
-    """
-    Function to display all the songs in the queue, as well as currently playing
-    """
-
-    @commands.command(name="view", help="Show active queue of recommendations")
+    @commands.command(name="view", help="Show current queue and currently playing song")
     async def view(self, ctx):
+        """
+        /view will show the current queue and currently playing song
+
+        :param ctx: the command context
+        """
         msg = ""
         if BotState.is_in_use():
             msg += f"Now playing: {BotState.current_song_playing}"
@@ -311,12 +397,13 @@ class SongQueueCog(commands.Cog):
 
         BotState.log_command(ctx, "Acknowledged")
 
-    """
-    Function to shuffle songs in the queue
-    """
-
     @commands.command(name="shuffle", help="To shuffle songs in queue")
     async def shuffle(self, ctx):
+        """
+        /shuffle will shuffle all the songs in the queue
+
+        :param ctx: the command context
+        """
         if len(BotState.song_queue) == 0:
             await ctx.send(f"No songs in queue. Try /queue <query> to get started")
         else:
@@ -327,6 +414,12 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="jumpto", help="Jump to a track number")
     async def jumpto(self, ctx, *, idx):
+        """
+        /jumpto will jump to the provided track
+
+        :param ctx: the command context
+        :param idx: the track index to jump to
+        """
         safe_idx = await self.ensure_track_number(ctx, idx)
 
         if safe_idx is not None:
@@ -341,6 +434,12 @@ class SongQueueCog(commands.Cog):
         help="Move the song at the given track number in a different position in the queue",
     )
     async def move(self, ctx, *, params):
+        """
+        /move will move a song at one track number to be at a different track number
+
+        :param ctx: the command context
+        :param params: the two indices to swap
+        """
         src_idx, dest_idx = params.split(" ", maxsplit=1)
 
         # dest_idx is ensured as a track number (0 < idx < size) and not as an insertion number (0 < idx <= size)
@@ -361,6 +460,12 @@ class SongQueueCog(commands.Cog):
         name="remove", help="Removes the song in the queue at the given track number"
     )
     async def remove(self, ctx, *, idx):
+        """
+        /remove will remove the song at the given track number
+
+        :param ctx: the command context
+        :param idx: the track index to remove
+        """
         removed_song = await self.delete_track(ctx, idx)
         if removed_song is not None:
             await BotState.log_and_send(
@@ -369,11 +474,23 @@ class SongQueueCog(commands.Cog):
 
     @commands.command(name="movefront", help="Moves a song to the front of the queue")
     async def movefront(self, ctx, *, src_idx):
+        """
+        /movefront will move a song to the front of the queue
+
+        :param ctx: the command context
+        :param idx: the track index to remove
+        """
         # remember that commands expect queue idx to start at 1
         await self.move(ctx, params=f"{src_idx} 1")
 
     @commands.command(name="moveback", help="Moves a song to the back of the queue")
     async def moveback(self, ctx, *, src_idx):
+        """
+        /moveback will move a song to the back of the queue
+
+        :param ctx: the command context
+        :param idx: the track index to remove
+        """
         # remember that commands expect queue idx to start at 1
         await self.move(ctx, params=f"{src_idx} {len(BotState.song_queue)}")
 
@@ -381,6 +498,11 @@ class SongQueueCog(commands.Cog):
         name="replay", help="Will replay the currently playing song once after it ends"
     )
     async def replay(self, ctx):
+        """
+        /replay will replay the currently playing song once it's done
+
+        :param ctx: the command context
+        """
         if not BotState.is_in_use():
             await BotState.log_and_send(ctx, "I am currently not playing any songs")
         else:
@@ -396,6 +518,11 @@ class SongQueueCog(commands.Cog):
         name="replaynow", help="Will immediately restart the currently playing song"
     )
     async def replaynow(self, ctx):
+        """
+        /replay will replay the currently playing song immediately
+
+        :param ctx: the command context
+        """
         if not BotState.is_in_use():
             await BotState.log_and_send(ctx, "I am currently not playing any songs")
         else:
@@ -407,4 +534,9 @@ class SongQueueCog(commands.Cog):
 
     @staticmethod
     async def setup(client):
+        """
+        Helper function to register this cog into the client
+
+        :param client: the client to register this cog for
+        """
         await client.add_cog(SongQueueCog(client))
