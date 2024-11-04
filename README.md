@@ -17,7 +17,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)
 [![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
 [![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)
-[![Code Formatter](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
+[![autopep8](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
 [![Syntax Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml)
 [![Style Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml)
 
