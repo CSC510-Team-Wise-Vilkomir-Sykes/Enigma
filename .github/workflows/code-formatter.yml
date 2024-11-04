@@ -1,6 +1,6 @@
 # This workflow will install run autopep
 
-name: Python Style Checker
+name: Run autopep8
 
 on:
   push:
