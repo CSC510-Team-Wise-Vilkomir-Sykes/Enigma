@@ -33,11 +33,11 @@ jobs:
       run: pip install autopep8
 
     - name: Run autopep8
-      run: autopep8 . --recursive --diff  # This will show the diff. Use '--in-place' to apply changes.
+      run: autopep8 . --recursive --in-place
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
       with:
         message: 'Apply autopep8 fixes'
         add: '.'
-      if: github.event_name == 'push'  # This conditional allows auto-commit only on push events.
+      if: github.event_name == 'push' 
