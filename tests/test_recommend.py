@@ -1,14 +1,13 @@
+from src.song import Song
+from src.get_all import get_all_songs
+from src.bot_state import BotState
+from src.recommend_cog import RecommendCog
 import pytest
 import pandas as pd
 from unittest.mock import AsyncMock, patch, MagicMock
 import sys
 
 sys.path.append("./")
-
-from src.recommend_cog import RecommendCog
-from src.bot_state import BotState
-from src.get_all import get_all_songs
-from src.song import Song
 
 
 @pytest.fixture
@@ -79,16 +78,17 @@ def test_generate_recommendations_one_song(mock_get_all_songs, recommend_cog, so
 
     # Generate recommendations
     recommendations = recommend_cog.generate_recommendations(selected_songs)
-    
+
     # Check if recommendations are generated correctly
-    assert all(isinstance(song, Song) for song in recommendations), "All recommendations should be Song objects"
+    assert all(isinstance(song, Song)
+               for song in recommendations), "All recommendations should be Song objects"
 
 
 # Test to ensure artist appearance limit is respected
 def test_artist_limit_in_recommendations(recommend_cog, songs_df):
     selected_songs = [Song(track_name="Song3", artist_name="Artist3", genre="Jazz")]
     recommendations = recommend_cog.generate_recommendations(selected_songs)
-    
+
     artist_counts = {}
     for song in recommendations:
         artist_counts[song.artist_name] = artist_counts.get(song.artist_name, 0) + 1
@@ -103,7 +103,8 @@ def test_exclude_selected_artists(recommend_cog, songs_df):
     ]
     recommendations = recommend_cog.generate_recommendations(selected_songs)
     for song in recommendations:
-        assert song.artist_name not in ["Artist3", "Artist5"], "Selected artists should not appear in recommendations"
+        assert song.artist_name not in [
+            "Artist3", "Artist5"], "Selected artists should not appear in recommendations"
 
 
 # Test to verify that the recommendations do not include duplicate songs
@@ -122,7 +123,8 @@ def test_insufficient_songs_for_recommendations(mock_get_all_songs, recommend_co
     mock_get_all_songs.return_value = songs_df.head(5)  # only 5 songs available
     selected_songs = [Song(track_name="Song1", artist_name="Artist1", genre="Pop")]
     recommendations = recommend_cog.generate_recommendations(selected_songs)
-    assert len(recommendations) < 10, "Should return fewer recommendations due to insufficient data"
+    assert len(
+        recommendations) < 10, "Should return fewer recommendations due to insufficient data"
 
 
 # Ensure that recommendations do not exceed the maximum limit of 10

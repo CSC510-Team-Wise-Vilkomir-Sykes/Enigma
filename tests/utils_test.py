@@ -1,12 +1,10 @@
+from src import utils
 import unittest
 import warnings
 import sys
 
 sys.path.append("./")
 warnings.filterwarnings("ignore")
-
-
-from src import utils
 
 
 class Tests(unittest.TestCase):

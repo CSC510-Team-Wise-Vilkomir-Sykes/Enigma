@@ -51,8 +51,6 @@ async def on_ready():
     BotState.logger = logging.getLogger("discord")  # Set up bot state logging
 
 
-
-
 @client.event
 async def on_message(message):
     """

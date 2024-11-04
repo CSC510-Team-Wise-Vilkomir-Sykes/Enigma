@@ -12,6 +12,7 @@ Attributes:
     - logger (logging.Logger): Logger instance for tracking bot commands and actions.
 """
 
+
 class BotState:
     song_queue = []  # Queue of songs selected by the user
     current_song_playing = None  # Currently playing song, if any

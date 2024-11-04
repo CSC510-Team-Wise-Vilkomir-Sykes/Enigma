@@ -50,6 +50,7 @@ class RecommendCog(commands.Cog):
         Provides commands for polling songs by genre and recommending songs
         based on user-selected tracks.
     """
+
     def __init__(self, bot):
         self.bot = bot  # Storing the bot instance in the cog
 
@@ -63,7 +64,8 @@ class RecommendCog(commands.Cog):
             - ctx (commands.Context): The context of the command invocation.
         """
 
-        number_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+        number_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣",
+                         "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
         selected_songs = []
         bot_message = "React with the numbers to the songs you like. You can select up to 3 songs."
         await ctx.send(bot_message)
@@ -131,7 +133,7 @@ class RecommendCog(commands.Cog):
                 # Update the song queue in BotState
                 BotState.song_queue = selected_songs.copy()
             except asyncio.TimeoutError:
-                break # End poll if user times out
+                break  # End poll if user times out
 
         # Send a summary of selected songs or notify if none were selected
         if selected_songs:
@@ -169,7 +171,8 @@ class RecommendCog(commands.Cog):
             )
             return
 
-        number_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+        number_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣",
+                         "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
         control_emojis = {"🆕": "new", "⏹️": "stop"}
 
         # Generate initial recommendations

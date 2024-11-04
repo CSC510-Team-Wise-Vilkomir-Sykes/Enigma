@@ -1,3 +1,5 @@
+from src.recommend_cog import *
+from src.get_all import *
 import unittest
 import warnings
 import pytest
@@ -6,8 +8,6 @@ import sys
 
 sys.path.append("./")
 
-from src.get_all import *
-from src.recommend_cog import *
 
 warnings.filterwarnings("ignore")
 

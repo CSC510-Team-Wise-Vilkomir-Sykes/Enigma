@@ -365,6 +365,7 @@ class SongQueueCog(commands.Cog):
         else:
             next_song = BotState.song_queue.pop(0)
             await self.play_song(ctx, next_song)
+
     @commands.command(name="view", help="Show current queue and currently playing song")
     async def view(self, ctx):
         """
