@@ -14,7 +14,7 @@
 [![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)
 [![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
-[![DOI](https://zenodo.org/badge/533639670.svg)](https://zenodo.org/badge/latestdoi/533639670)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)
 [![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
 [![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)
 [![Code Formatter](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
