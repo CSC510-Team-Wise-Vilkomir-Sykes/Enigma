@@ -40,19 +40,22 @@
   <li>Ability to toggle music pause/resume</li>
   <li>Ability to play custom song without having to search the song on youtube</li>
   <li>Ability to switch back and forth between songs</li>
+  <li>Ability to move songs around in the queue and replay songs</li>
 </ul>
 If you want to get added to the music server on discord to test the bot, drop an email to spriyad2@ncsu.edu
 </div>
   
-<h1> Features added by Group 17</h1>
+<h1> Features added by Group 87</h1>
 
 <div>
 <ul>
-  <li>Added a new data set [this](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019) which has approximately 24000 songs</li>
-  <li>Added a new functionality to shuffle the songs within the queue</li>
-  <li>Added a new functionality to add a custom song to the queue</li>
-  <li>Fixed the issue of fetching songs from Youtube</li>
-  <li>Extended the application to be deployed on Microsoft Azure</li>
+  <li>Custom songs are now put into the queue dynamically instead of being played instantly<li>
+  <li>The bot is able to be used across several voice channels while still keeping a consistent internal state</li>
+  <li>The bot has both instant and delayed replay of songs</li>
+  <li>The bot can have songs inserted at any point in the queue</li>
+  <li>The bot can have songs in the queue moved around to any arbitrary order even while running</li>
+  <li>Songs can be removed from the queue</li>
+  <li>More dynamic recommendation features: Recommendations will be made now from an arbitrary number of songs already present in the queue, and are based on particular artists and genres rather than simply "liked" and "disliked" songs</li>
 </ul>
 </div>
 
@@ -97,25 +100,18 @@ https://user-images.githubusercontent.com/21155121/205782352-426dcee7-f145-43f1-
 <h1>📍RoadMap </h1>
 
 What We've Done:
-1. Created a Discord Bot via the Discord Developer Portal.
-2. Incorporated a [dataset](https://www.kaggle.com/datasets/leonardopena/top-spotify-songs-from-20102019-by-year) to our application.
-3. Added functionalities to the Discord bot (explained in the [Features](https://github.com/rahulgautam21/Enigma/blob/main/README.md) section above.
-4. Use the Discord Bot to play music based on the user's recommendations.
-5. Can also use the Bot to play custom songs without having to search for it on YouTube.
-6. Extend the application to be deployed online (via a website or an application).
-7. Alternatively, use [this](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019) as the primary data source to make better recommendations.
-8. Added some more functionality to the discord bot:
-    * Add a custom song to the queue
-    * Shuffle songs within the queue
+1. Custom songs are now put into the queue dynamically instead of being played instantly
+2. The bot is able to be used across several voice channels while still keeping a consistent internal state
+3. The bot has both instant and delayed replay of songs
+4. The bot can have songs inserted at any point in the queue
+5. The bot can have songs in the queue moved around to any arbitrary order even while running
+6. Songs can be removed from the queue
+7. More dynamic recommendation features: Recommendations will be made now from an arbitrary number of songs already present in the queue, and are based on particular artists and genres rather than simply "liked" and "disliked" songs
 
 What We've Yet To Do:
-1. Make the song recommendations more sophisticated by using content-based recommendor systems.
-2. Integrating dislikes (taking into account the feedback of users) in the recommendation logic.
-3. Use web scraping and EDA to get a better database for the discord bot.
-4. Add some more functionality to the discord bot:
-    * Move a song within a queue or to the top of the queue
-    * Jump to a specific song in the queue
-    * Replay the song (instead of going to the next song and then coming back to the previous song)
+1. Allow for seemless transitions between songs by automatically detecting when a song is about to finish, the pre-loading the next song in the queue.
+2. Have the database of song recommendations update automatically for when new songs come out
+3. Improved sound quality of the audio playback to be fully integrated into Discord's built in volume adjuster (currently peaks the audio in some extreme cases) 
 
 
 
@@ -126,14 +122,13 @@ Documentation for the code available at - <a href="https://saswat123.github.io/E
 
 <h1> 👥 Contributors <a name="Contributors"></a> </h1>
 
-### Group 17
+### Group 87
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Sneha1b"><img src="https://avatars.githubusercontent.com/u/29037428?v=4" width="75px;" alt=""/><br /><sub><b>Sneha Madle</b></sub></a></td>
-    <td align="center"><a href="https://github.com/yugaleepatil"><img src="https://avatars.githubusercontent.com/u/91028926?v=4" width="75px;" alt=""/><br /><sub><b>Yugalee Patil</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/cnangia-ncsu"><img src="https://avatars.githubusercontent.com/u/89174495?v=4" width="75px;" alt=""/><br /><sub><b>Chirrag Nangia</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/SASWAT123"><img src="https://avatars.githubusercontent.com/u/21155121?v=4" width="75px;" alt=""/><br /><sub><b>Saswat Priyadarshan</b></sub></a><br /></td>
+    Gwen Mason
+    Yi Zhang
+    Kevin Dai
   </tr>
 
 </table>
@@ -147,4 +142,5 @@ Please see [`CONTRIBUTING`](CONTRIBUTING.md) for contributing to this project.
 The data for this project is present [here](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019)
 
 <h1> Support </h1>
-For any support reach out to spriyad2@ncsu.edu
+For any and all support reach out to spriyad2@ncsu.edu or gwenmason125@ncsu.edu
+For bug ticket request, use the internal Github ticketing features, or reach out to one of the emails above.
