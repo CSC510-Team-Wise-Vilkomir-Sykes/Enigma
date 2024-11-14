@@ -21,3 +21,23 @@ def create_table():
     ''')
 	conn.commit()
 	conn.close()
+
+
+def insert_song(data):
+	conn = create_connection()
+	cursor = conn.cursor()
+	cursor.execute('''
+        INSERT INTO songs (chart_name, rank, title, artist, weeks_on_chart)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (data['chart_name'], data['rank'], data['title'], data['artist'],
+		  data.get('weeks_on_chart', None)))
+	conn.commit()
+	conn.close()
+
+
+def clear_data():
+	conn = create_connection()
+	cursor = conn.cursor()
+	cursor.execute('DELETE FROM songs')
+	conn.commit()
+	conn.close()
