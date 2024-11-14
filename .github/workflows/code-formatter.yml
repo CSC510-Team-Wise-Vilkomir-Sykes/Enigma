@@ -4,9 +4,9 @@ name: Run autopep8
 
 on:
   push:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
   pull_request:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
 
 permissions:
   contents: write
@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
+
     - name: Install autopep8
       run: pip install autopep8
 
@@ -40,4 +40,4 @@ jobs:
       with:
         message: 'Apply autopep8 fixes'
         add: '.'
-      if: github.event_name == 'push' 
+      if: github.event_name == 'push'
