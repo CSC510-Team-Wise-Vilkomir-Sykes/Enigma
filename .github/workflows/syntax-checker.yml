@@ -4,9 +4,9 @@ name: Flake8 Syntax Check
 
 on:
   push:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
   pull_request:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
 
 jobs:
   flake8:
@@ -33,7 +33,7 @@ jobs:
       - name: Install Black
         run: |
           pip install black
-  
+
       - name: Run Black
         run: black . --check --diff
 

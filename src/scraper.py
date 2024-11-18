@@ -75,3 +75,35 @@ def scrape_chart(chart_link):
 
 	return songs
 
+
+async def initial_scrape():
+	"""Performs an initial scrape to fill the database with all charts."""
+	main_url = 'https://www.billboard.com/charts/'
+	headers = {
+		'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+	}
+	response = requests.get(main_url, headers=headers)
+	soup = BeautifulSoup(response.content, 'html.parser')
+	# Find all 'o-chart-list-card' divs for each chart link
+	chart_divs = soup.find_all('div', class_='o-chart-list-card')
+	chart_links = []
+	for chart_div in chart_divs:
+		link_element = chart_div.find('a', href=True)
+		if link_element:
+			href = link_element['href']
+			chart_name = href.strip('/').split('/')[-1]  # Extract the last part of URL
+			chart_links.append(chart_name)
+
+	# Clear existing data and create the table
+
+
+	clear_data()
+	create_table()  # Scrape each chart and insert songs into the database
+	for chart_link in chart_links:
+		print(f"Scraping chart: {chart_link}")
+		songs = scrape_chart(chart_link)
+		for song_data in songs:
+			insert_song(song_data)
+		await asyncio.sleep(1)  # Pause slightly between chart scrapes
+	print("Initial scrape complete. Database is populated with all chart data.")
+
