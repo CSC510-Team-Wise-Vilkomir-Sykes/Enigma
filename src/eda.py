@@ -9,9 +9,9 @@ def get_top_songs(conn):
 
 
 def get_top_artists(conn):
-	query = "SELECT artist, COUNT(*) as count FROM songs GROUP BY artist ORDER BY count DESC LIMIT 10"
-	df = pd.read_sql(query, conn)
-	return df
+    query = "SELECT artist, COUNT(*) as count FROM songs GROUP BY artist ORDER BY count DESC LIMIT 10"
+    df = pd.read_sql(query, conn)
+    return df
 
 
 def get_longest_charting_songs(conn):
