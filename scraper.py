@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from database import create_table, insert_song, clear_data
 
+
 def scrape_charts():
     # URL of the Billboard main charts page
     main_url = 'https://www.billboard.com/charts/'
@@ -17,4 +18,3 @@ def scrape_charts():
             href = link_element['href']
             chart_name = href.strip('/').split('/')[-1]
             chart_links.append(chart_name)
-

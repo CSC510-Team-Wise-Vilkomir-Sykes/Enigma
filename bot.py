@@ -44,104 +44,102 @@ client = commands.Bot(command_prefix="/", intents=intents)
 
 # Background task for scheduling
 async def schedule_task():
-	while True:
-		schedule.run_pending()
-		await asyncio.sleep(3600)  # Check every hour for scheduled tasks
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(3600)  # Check every hour for scheduled tasks
 
 
 # Command to start the bot's update scheduler
 
 
-
-
 @client.event
 async def on_ready():
-	"""
-		Triggered when the bot is ready and connected to Discord.
+    """
+            Triggered when the bot is ready and connected to Discord.
 
-		Loads necessary cogs and initializes the bot's logger for state tracking and error reporting.
-	"""
-	print(f'Logged in as {client.user}')
-	# Define the scraping schedule (e.g., every day at midnight)
-	await initial_scrape()
+            Loads necessary cogs and initializes the bot's logger for state tracking and error reporting.
+    """
+    print(f'Logged in as {client.user}')
+    # Define the scraping schedule (e.g., every day at midnight)
+    await initial_scrape()
 
-	# Define the scraping schedule (e.g., every day at midnight)
-	schedule.every().day.at("00:00").do(update_charts)
-	# Start the background task for scheduling
-	client.loop.create_task(schedule_task())
+    # Define the scraping schedule (e.g., every day at midnight)
+    schedule.every().day.at("00:00").do(update_charts)
+    # Start the background task for scheduling
+    client.loop.create_task(schedule_task())
 
-	await SongQueueCog.setup(client)  # Initialize the song queue cog
-	await RecommendCog.setup(client)  # Initialize the recommendation cog
-	BotState.logger = logging.getLogger("discord")  # Set up bot state logging
+    await SongQueueCog.setup(client)  # Initialize the song queue cog
+    await RecommendCog.setup(client)  # Initialize the recommendation cog
+    BotState.logger = logging.getLogger("discord")  # Set up bot state logging
 
 
 @client.event
 async def on_message(message):
-	"""
-		Processes incoming messages in Discord.
+    """
+            Processes incoming messages in Discord.
 
-		Ignores messages from the bot itself and allows command processing for messages in the "general" channel.
+            Ignores messages from the bot itself and allows command processing for messages in the "general" channel.
 
-		Args:
-			message (discord.Message): The incoming message from Discord.
-		"""
-	if message.author == client.user:
-		return  # Ignore messages sent by the bot itself
-	options = set()
+            Args:
+                    message (discord.Message): The incoming message from Discord.
+            """
+    if message.author == client.user:
+        return  # Ignore messages sent by the bot itself
+    options = set()
 
-	# Only process commands in the "general" channel
-	if message.content.startswith('!top_songs'):
-		df = get_top_songs(sqlite3.connect("../songs.db"))
-		response = "Top 10 Popular Songs:\n" + "\n".join(
-			f"{i + 1}. {row['title']} by {row['artist']} ({row['chart_name']})" for i, row in
-			df.iterrows()
-		)
-		if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
-			for i, row in df.iterrows():
-				BotState.song_queue.insert(-1, row['title'])
-		await message.channel.send(response)
+    # Only process commands in the "general" channel
+    if message.content.startswith('!top_songs'):
+        df = get_top_songs(sqlite3.connect("../songs.db"))
+        response = "Top 10 Popular Songs:\n" + "\n".join(
+            f"{i + 1}. {row['title']} by {row['artist']} ({row['chart_name']})" for i, row in
+            df.iterrows()
+        )
+        if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
+            for i, row in df.iterrows():
+                BotState.song_queue.insert(-1, row['title'])
+        await message.channel.send(response)
 
-	elif message.content.startswith('!top_artists'):
-		df = get_top_artists(sqlite3.connect("../songs.db"))
-		response = "Top 10 Artists by Frequency:\n" + "\n".join(
-			f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in df.iterrows()
-		)
-		await message.channel.send(response)
+    elif message.content.startswith('!top_artists'):
+        df = get_top_artists(sqlite3.connect("../songs.db"))
+        response = "Top 10 Artists by Frequency:\n" + "\n".join(
+            f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in df.iterrows()
+        )
+        await message.channel.send(response)
 
-	elif message.content.startswith('!longest_charting'):
-		df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
-		response = "Longest-Charting Songs:\n" + "\n".join(
-			f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} weeks)" for i, row
-			in df.iterrows()
-		)
-		if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
-			for i, row in df.iterrows():
-				BotState.song_queue.insert(-1, row['title'])
-		await message.channel.send(response)
-	user_message = str(message.content)
-	await client.process_commands(message)  # Process commands issued in messages
+    elif message.content.startswith('!longest_charting'):
+        df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
+        response = "Longest-Charting Songs:\n" + "\n".join(
+            f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} weeks)" for i, row
+            in df.iterrows()
+        )
+        if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
+            for i, row in df.iterrows():
+                BotState.song_queue.insert(-1, row['title'])
+        await message.channel.send(response)
+    user_message = str(message.content)
+    await client.process_commands(message)  # Process commands issued in messages
 
 
 @client.event
 async def on_voice_state_update(member, before, after):
-	"""
-		Handles voice state changes to manage bot audio playback.
+    """
+            Handles voice state changes to manage bot audio playback.
 
-		Pauses or stops playback when the bot moves between voice channels or disconnects.
+            Pauses or stops playback when the bot moves between voice channels or disconnects.
 
-		Args:
-			member (discord.Member): The member whose voice state changed.
-			before (discord.VoiceState): The member's previous voice state.
-			after (discord.VoiceState): The member's current voice state.
-		"""
+            Args:
+                    member (discord.Member): The member whose voice state changed.
+                    before (discord.VoiceState): The member's previous voice state.
+                    after (discord.VoiceState): The member's current voice state.
+            """
 
-	# Check if the member joining/leaving is the bot
-	if member is member.guild.me:
-		voice_client = member.guild.voice_client
-		if after.channel is None or before.channel is None:
-			BotState.stop(voice_client)  # Stop playback if bot leaves a voice channel
-		elif before.channel is not after.channel:
-			BotState.pause(voice_client)  # Pause playback if bot switches channels
+    # Check if the member joining/leaving is the bot
+    if member is member.guild.me:
+        voice_client = member.guild.voice_client
+        if after.channel is None or before.channel is None:
+            BotState.stop(voice_client)  # Stop playback if bot leaves a voice channel
+        elif before.channel is not after.channel:
+            BotState.pause(voice_client)  # Pause playback if bot switches channels
 
 
 # Start the bot using the provided token from environment variables
