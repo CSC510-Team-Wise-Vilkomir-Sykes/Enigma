@@ -4,9 +4,9 @@ name: Ruff Style Check
 
 on:
   push:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
   pull_request:
-    branches: [main,dev]
+    branches: [main,dev,WebScraping]
 
 permissions:
   contents: write
