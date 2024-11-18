@@ -1,33 +1,44 @@
 """
 recommend_cog.py
 
-This module contains the RecommendCog class, a Discord bot cog for handling song recommendations
+This module contains the RecommendCog class, a Discord bot cog for handling song
+recommendations
 and polling based on user preferences. The cog includes two main commands:
-- /poll: Allows users to select songs by reacting to a list of randomly chosen tracks from different genres.
-- /recommend: Provides personalized song recommendations based on the user’s previous selections.
+- /poll: Allows users to select songs by reacting to a list of randomly chosen
+tracks from different genres.
+- /recommend: Provides personalized song recommendations based on the user’s
+previous selections.
 
 Classes:
-    RecommendCog(commands.Cog): A cog that encapsulates song recommendation and polling commands.
+    RecommendCog(commands.Cog): A cog that encapsulates song recommendation and
+    polling commands.
 
 Functions:
-    - poll(ctx): Presents a list of 10 songs to the user, allowing them to choose up to 3 for recommendations.
-    - recommend(ctx): Provides song recommendations based on selected songs, with options to save or request new suggestions.
-    - generate_recommendations(selected_songs): Generates up to 10 song recommendations based on the genres of selected songs.
+    - poll(ctx): Presents a list of 10 songs to the user, allowing them to choose
+    up to 3 for recommendations.
+    - recommend(ctx): Provides song recommendations based on selected songs,
+    with options to save or request new suggestions.
+    - generate_recommendations(selected_songs): Generates up to 10 song
+    recommendations based on the genres of selected songs.
 
 Dependencies:
     - discord.py: For creating and managing bot commands and message interactions.
     - asyncio: For handling asynchronous events like reactions.
     - pandas: For managing song data in DataFrames.
-    - BotState: A module to maintain the current state of selected songs across bot sessions.
-    - utils: Helper functions, including random_25 for selecting random recommendations.
+    - BotState: A module to maintain the current state of selected songs across
+    bot sessions.
+    - utils: Helper functions, including random_25 for selecting random
+    recommendations.
 
 Usage:
-    Add this cog to your Discord bot instance to provide music recommendation features.
+    Add this cog to your Discord bot instance to provide music recommendation
+    features.
     Example:
         bot.add_cog(RecommendCog(bot))
 
 Notes:
-    This module assumes the presence of a "Song" class, which encapsulates track metadata (track name, artist, genre),
+    This module assumes the presence of a "Song" class, which encapsulates track
+    metadata (track name, artist, genre),
     and the "get_all_songs" and "get_songs_by_genre" functions to fetch songs.
 """
 
@@ -38,9 +49,7 @@ import random
 import asyncio
 from src.bot_state import BotState
 from src.get_all import get_all_songs
-from src.utils import random_25
 from src.get_all import get_songs_by_genre
-import pandas as pd
 from src.song import Song
 
 
@@ -57,7 +66,8 @@ class RecommendCog(commands.Cog):
     @commands.command(name="poll", help="Poll for recommendation")
     async def poll(self, ctx):
         """
-            Poll command to display a list of 10 randomly selected songs from different genres.
+            Poll command to display a list of 10 randomly selected songs from
+            different genres.
             Allows the user to select up to 3 songs by reacting to message emojis.
 
             Parameters:
@@ -67,7 +77,8 @@ class RecommendCog(commands.Cog):
         number_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣",
                          "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
         selected_songs = []
-        bot_message = "React with the numbers to the songs you like. You can select up to 3 songs."
+        bot_message = ("React with the numbers to the songs you like. You can "
+                       "select up to 3 songs.")
         await ctx.send(bot_message)
 
         # Fetch 10 random songs by genre
@@ -76,15 +87,15 @@ class RecommendCog(commands.Cog):
         # Create and display a list of song names with corresponding emojis
         song_list_message = ""
         for index, (track_name, artist, genre) in enumerate(
-            zip(
-                ten_random_songs["track_name"],
-                ten_random_songs["artist_name"],
-                ten_random_songs["genre"],
-            ),
-            start=1,
+                zip(
+                    ten_random_songs["track_name"],
+                    ten_random_songs["artist_name"],
+                    ten_random_songs["genre"],
+                ),
+                start=1,
         ):
             song_list_message += (
-                f"{number_emojis[index-1]} - {track_name} by {artist} ({genre})\n"
+                f"{number_emojis[index - 1]} - {track_name} by {artist} ({genre})\n"
             )
 
         poll_embed = discord.Embed(
@@ -99,9 +110,9 @@ class RecommendCog(commands.Cog):
         # Check function to validate reactions
         def check(reaction, user):
             return (
-                user == ctx.author
-                and reaction.message.id == react_message.id
-                and str(reaction.emoji) in number_emojis
+                    user == ctx.author
+                    and reaction.message.id == react_message.id
+                    and str(reaction.emoji) in number_emojis
             )
 
         # Collect up to 3 song selections from user reactions
@@ -118,7 +129,8 @@ class RecommendCog(commands.Cog):
                 ]["track_name"] not in [song.track_name for song in selected_songs]:
                     song = Song(
                         track_name=ten_random_songs.iloc[emoji_index]["track_name"],
-                        artist_name=ten_random_songs.iloc[emoji_index]["artist_name"],
+                        artist_name=ten_random_songs.iloc[emoji_index][
+                            "artist_name"],
                         genre=ten_random_songs.iloc[emoji_index]["genre"],
                     )
                 selected_songs.append(song)
@@ -126,7 +138,8 @@ class RecommendCog(commands.Cog):
                 # Confirm addition with an embedded message
                 favorite_embed = discord.Embed(
                     title="Added to Favorites",
-                    description=f"{song.track_name} by {song.artist_name} ({song.genre})",
+                    description=f"{song.track_name} by {song.artist_name} " +
+                                f"({song.genre})",
                     color=0x00FF00,
                 )
                 await ctx.send(embed=favorite_embed)
@@ -147,7 +160,8 @@ class RecommendCog(commands.Cog):
             await ctx.send("No songs were selected.")
 
     """
-    This function displays a recommended song list, and allows user to queue recommended songs or get new recommendations
+    This function displays a recommended song list, and allows user to queue 
+    recommended songs or get new recommendations
     """
 
     @commands.command(
@@ -156,7 +170,8 @@ class RecommendCog(commands.Cog):
     async def recommend(self, ctx):
         """
             Recommend command to suggest songs based on previously selected tracks.
-            Users can react to add songs to their queue, or get a new set of recommendations.
+            Users can react to add songs to their queue, or get a new set of
+            recommendations.
 
             Parameters:
             - ctx (commands.Context): The context of the command invocation.
@@ -189,7 +204,8 @@ class RecommendCog(commands.Cog):
 
         # Display recommended songs
         description = "\n".join(
-            f"{number_emojis[i]} {song.track_name} by {song.artist_name} ({song.genre})"
+            f"{number_emojis[i]} {song.track_name} by {song.artist_name} ("
+            f"{song.genre})"
             for i, song in enumerate(recommended_songs)
         )
         embed = discord.Embed(
@@ -199,7 +215,7 @@ class RecommendCog(commands.Cog):
 
         # Add reactions for songs and controls (new recommendations or stop)
         for emoji in number_emojis[: len(recommended_songs)] + list(
-            control_emojis.keys()
+                control_emojis.keys()
         ):
             await msg.add_reaction(emoji)
 
@@ -209,13 +225,13 @@ class RecommendCog(commands.Cog):
             # Check function to validate reactions
             def check(reaction, user):
                 return (
-                    user == ctx.author
-                    and reaction.message.id == msg.id
-                    and (
-                        str(reaction.emoji)
-                        in number_emojis[: len(recommended_songs)]
-                        + list(control_emojis.keys())
-                    )
+                        user == ctx.author
+                        and reaction.message.id == msg.id
+                        and (
+                                str(reaction.emoji)
+                                in number_emojis[: len(recommended_songs)]
+                                + list(control_emojis.keys())
+                        )
                 )
 
             try:
@@ -245,7 +261,7 @@ class RecommendCog(commands.Cog):
                         )
                         await msg.edit(embed=embed)
                         for emoji in number_emojis[: len(recommended_songs)] + list(
-                            control_emojis.keys()
+                                control_emojis.keys()
                         ):
                             await msg.add_reaction(emoji)
                     elif action == "stop":
@@ -253,7 +269,8 @@ class RecommendCog(commands.Cog):
                         await ctx.send(
                             embed=discord.Embed(
                                 title="Ending recommendation session",
-                                description="Use /recommend command for music recommendation",
+                                description="Use /recommend command for music "
+                                            "recommendation",
                                 color=0xFF0000,
                             )
                         )
@@ -277,7 +294,8 @@ class RecommendCog(commands.Cog):
 
     def generate_recommendations(self, selected_songs):
         """
-            Helper function that generates up to 10 recommended songs based on the genres of selected songs.
+            Helper function that generates up to 10 recommended songs based on the
+            genres of selected songs.
 
             Parameters:
             - selected_songs (list[Song]): A list of songs selected by the user.
@@ -299,7 +317,8 @@ class RecommendCog(commands.Cog):
         # Set a limit on how many times an artist can appear in the recommendations
         artist_limit = 2
 
-        # Filter songs that match the genres collected and are not by the same artists as the input songs
+        # Filter songs that match the genres collected and are not by the same
+        # artists as the input songs
         matched_songs = all_songs[
             all_songs["genre"].isin(genres)
             & (
@@ -312,12 +331,13 @@ class RecommendCog(commands.Cog):
                     [song.track_name for song in selected_songs]
                 )
             )
-        ].copy()
+            ].copy()
 
         # Shuffle the matched songs to prevent bias
         matched_songs = matched_songs.sample(frac=1).reset_index(drop=True)
 
-        # Iterate through the matched songs and add them to recommendations if they meet the criteria
+        # Iterate through the matched songs and add them to recommendations if
+        # they meet the criteria
         for _, matched_song in matched_songs.iterrows():
             song = Song(
                 track_name=matched_song["track_name"],

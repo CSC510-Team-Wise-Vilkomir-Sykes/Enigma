@@ -1,10 +1,10 @@
 """
-This file is responsible for handling all data operations such as showing songs that the user can select.
+This file is responsible for handling all data operations such as showing songs
+that the user can select.
 Recommendation of songs filtering operations etc.
 """
 
 import pandas as pd
-import random
 
 """
 This function returns songs and their track_name, artist, year and genre.
@@ -28,7 +28,8 @@ def get_all_songs():
 
 
 """
-This function returns 10 songs within different genre for generating the poll for the user
+This function returns 10 songs within different genre for generating the poll for 
+the user
 """
 
 

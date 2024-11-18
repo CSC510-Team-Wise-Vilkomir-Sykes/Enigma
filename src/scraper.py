@@ -17,7 +17,8 @@ def get_chart_links(main_url='https://www.billboard.com/charts/'):
         link_element = chart_div.find('a', href=True)
         if link_element:
             href = link_element['href']
-            chart_name = href.strip('/').split('/')[-1]  # Extract the last part of URL
+            chart_name = href.strip('/').split('/')[
+                -1]  # Extract the last part of URL
             chart_links.append(chart_name)
 
     print(f"Found {len(chart_links)} chart links.")
@@ -28,7 +29,9 @@ def scrape_chart(chart_link):
     """Scrapes a single chart page and returns a list of song dictionaries."""
     url = f'https://www.billboard.com/charts/{chart_link}/'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 '
+                      'Safari/537.36'
     }
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -69,7 +72,8 @@ def scrape_chart(chart_link):
             last_item = list_items[-1]
             weeks_on_chart = last_item.find('span', class_='c-label')
             if weeks_on_chart and weeks_on_chart.get_text(strip=True).isdigit():
-                song_data['weeks_on_chart'] = int(weeks_on_chart.get_text(strip=True))
+                song_data['weeks_on_chart'] = int(
+                    weeks_on_chart.get_text(strip=True))
 
         # Append the song data to the songs list
         songs.append(song_data)
@@ -81,7 +85,9 @@ async def initial_scrape():
     """Performs an initial scrape to fill the database with all charts."""
     main_url = 'https://www.billboard.com/charts/'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 '
+                      'Safari/537.36'
     }
     response = requests.get(main_url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -92,7 +98,8 @@ async def initial_scrape():
         link_element = chart_div.find('a', href=True)
         if link_element:
             href = link_element['href']
-            chart_name = href.strip('/').split('/')[-1]  # Extract the last part of URL
+            chart_name = href.strip('/').split('/')[
+                -1]  # Extract the last part of URL
             chart_links.append(chart_name)
 
     # Clear existing data and create the table
@@ -109,7 +116,8 @@ async def initial_scrape():
 
 
 def update_charts():
-    """Regular update function that scrapes all current charts without clearing the database."""
+    """Regular update function that scrapes all current charts without clearing
+    the database."""
     # Get all chart links dynamically
     chart_links = get_chart_links()
     create_table()  # Ensure the table exists

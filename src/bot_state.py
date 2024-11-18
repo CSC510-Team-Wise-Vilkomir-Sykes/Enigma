@@ -1,7 +1,8 @@
 """
 bot_state.py
 
-This module defines the BotState class, which manages the shared state of the Discord bot's music playback, including
+This module defines the BotState class, which manages the shared state of the
+Discord bot's music playback, including
 the song queue, playback status, and logging.
 
 Attributes:
@@ -25,7 +26,8 @@ class BotState:
         """Logs a command action with the specified message.
 
             Args:
-                ctx (Context): The context of the command, used to access author and command name.
+                ctx (Context): The context of the command, used to access author
+                and command name.
                 msg (str): The message to log, providing additional details.
         """
         cls.logger.info(f"ENIGMA ({ctx.author.name} /{ctx.command.name}) {msg}")
@@ -35,7 +37,8 @@ class BotState:
         """Sends a message to the user and logs the command action.
 
             Args:
-                ctx (Context): The context of the command, used for logging and sending messages.
+                ctx (Context): The context of the command, used for logging and
+                sending messages.
                 msg (str): The message to send and log.
         """
         await ctx.send(msg)  # Send message to the Discord channel
@@ -67,13 +70,15 @@ class BotState:
                 voice_client (VoiceClient): The Discord voice client instance.
 
             Returns:
-                bool: True if the bot is connected to a voice channel, False otherwise.
+                bool: True if the bot is connected to a voice channel,
+                False otherwise.
         """
         return voice_client is not None and voice_client.is_connected()
 
     @classmethod
     def pause(cls, voice_client):
-        """Pauses playback if a song is currently playing and the bot is connected to a voice channel.
+        """Pauses playback if a song is currently playing and the bot is connected
+        to a voice channel.
 
             Args:
                 voice_client (VoiceClient): The Discord voice client instance.

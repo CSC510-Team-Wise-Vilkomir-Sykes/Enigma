@@ -4,9 +4,9 @@ name: Flake8 Syntax Check
 
 on:
   push:
-    branches: [main,dev,WebScraping]
+    branches: [main,dev]
   pull_request:
-    branches: [main,dev,WebScraping]
+    branches: [main,dev]
 
 jobs:
   flake8:

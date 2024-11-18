@@ -1,15 +1,19 @@
 """
 bot.py
 
-This module initializes and runs a Discord bot with multiple cogs, handling song recommendations, song queueing,
-and voice state updates. It configures the bot’s command prefix, loads essential cogs, and defines event handlers
-for bot readiness, incoming messages, and voice state changes.
+This module initializes and runs a Discord bot with multiple cogs, handling song
+recommendations,
+song queueing, and voice state updates. It configures the bot’s command prefix,
+loads essential cogs, and defines event handlers for bot readiness,
+incoming messages, and voice state changes.
 
 Environment Variables:
-    - DISCORD_TOKEN: The bot token used to authenticate with Discord, loaded from a .env file.
+    - DISCORD_TOKEN: The bot token used to authenticate with Discord, loaded from
+    a .env file.
 
 Modules:
-    - BotState: Manages the state of the bot, including logging and audio playback control.
+    - BotState: Manages the state of the bot, including logging and audio playback
+    control.
     - RecommendCog: A cog that provides song recommendation and polling commands.
     - SongQueueCog: A cog that handles song queueing operations.
     - searchSong: Utility function for song search.
@@ -57,7 +61,8 @@ async def on_ready():
     """
             Triggered when the bot is ready and connected to Discord.
 
-            Loads necessary cogs and initializes the bot's logger for state tracking and error reporting.
+            Loads necessary cogs and initializes the bot's logger for state tracking
+            and error reporting.
     """
     print(f'Logged in as {client.user}')
     # Define the scraping schedule (e.g., every day at midnight)
@@ -78,7 +83,9 @@ async def on_message(message):
     """
             Processes incoming messages in Discord.
 
-            Ignores messages from the bot itself and allows command processing for messages in the "general" channel.
+            Ignores messages from the bot itself and allows command processing for
+            messages in the
+            "general" channel.
 
             Args:
                     message (discord.Message): The incoming message from Discord.
@@ -91,10 +98,12 @@ async def on_message(message):
     if message.content.startswith('!top_songs'):
         df = get_top_songs(sqlite3.connect("../songs.db"))
         response = "Top 10 Popular Songs:\n" + "\n".join(
-            f"{i + 1}. {row['title']} by {row['artist']} ({row['chart_name']})" for i, row in
+            f"{i + 1}. {row['title']} by {row['artist']} ({row['chart_name']})" for
+            i, row in
             df.iterrows()
         )
-        if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
+        if len(message.content.split(" ")) > 1 and message.content.split(" ")[
+            1] == "add":
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
         await message.channel.send(response)
@@ -102,17 +111,22 @@ async def on_message(message):
     elif message.content.startswith('!top_artists'):
         df = get_top_artists(sqlite3.connect("../songs.db"))
         response = "Top 10 Artists by Frequency:\n" + "\n".join(
-            f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in df.iterrows()
+            f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in
+            df.iterrows()
         )
         await message.channel.send(response)
 
     elif message.content.startswith('!longest_charting'):
         df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
         response = "Longest-Charting Songs:\n" + "\n".join(
-            f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} weeks)" for i, row
+            f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} "
+			f"weeks)"
+            for i,
+            row
             in df.iterrows()
         )
-        if len(message.content.split(" ")) > 1 and message.content.split(" ")[1] == "add":
+        if len(message.content.split(" ")) > 1 and message.content.split(" ")[
+            1] == "add":
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
         await message.channel.send(response)
@@ -125,7 +139,8 @@ async def on_voice_state_update(member, before, after):
     """
             Handles voice state changes to manage bot audio playback.
 
-            Pauses or stops playback when the bot moves between voice channels or disconnects.
+            Pauses or stops playback when the bot moves between voice channels or
+            disconnects.
 
             Args:
                     member (discord.Member): The member whose voice state changed.
@@ -137,7 +152,8 @@ async def on_voice_state_update(member, before, after):
     if member is member.guild.me:
         voice_client = member.guild.voice_client
         if after.channel is None or before.channel is None:
-            BotState.stop(voice_client)  # Stop playback if bot leaves a voice channel
+            BotState.stop(
+                voice_client)  # Stop playback if bot leaves a voice channel
         elif before.channel is not after.channel:
             BotState.pause(voice_client)  # Pause playback if bot switches channels
 
