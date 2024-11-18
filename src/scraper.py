@@ -107,3 +107,17 @@ async def initial_scrape():
 		await asyncio.sleep(1)  # Pause slightly between chart scrapes
 	print("Initial scrape complete. Database is populated with all chart data.")
 
+
+def update_charts():
+	"""Regular update function that scrapes all current charts without clearing the database."""
+	# Get all chart links dynamically
+	chart_links = get_chart_links()
+	create_table()  # Ensure the table exists
+
+	# Scrape each chart and update database
+	for chart_link in chart_links:
+		print(f"Updating chart: {chart_link}")
+		songs = scrape_chart(chart_link)
+		for song_data in songs:
+			insert_song(song_data)
+	print("Update complete.")
