@@ -5,6 +5,7 @@ generating recommendations,
 """
 
 import asyncio
+import random
 
 import discord
 
