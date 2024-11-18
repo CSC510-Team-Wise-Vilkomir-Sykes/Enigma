@@ -103,7 +103,7 @@ async def on_message(message):
             df.iterrows()
         )
         if len(message.content.split(" ")) > 1 and message.content.split(" ")[
-            1] == "add":
+                1] == "add":
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
         await message.channel.send(response)
@@ -120,13 +120,13 @@ async def on_message(message):
         df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
         response = "Longest-Charting Songs:\n" + "\n".join(
             f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} "
-			f"weeks)"
+            f"weeks)"
             for i,
             row
             in df.iterrows()
         )
         if len(message.content.split(" ")) > 1 and message.content.split(" ")[
-            1] == "add":
+                1] == "add":
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
         await message.channel.send(response)

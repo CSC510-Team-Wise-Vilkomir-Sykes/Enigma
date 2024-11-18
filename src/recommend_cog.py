@@ -110,9 +110,9 @@ class RecommendCog(commands.Cog):
         # Check function to validate reactions
         def check(reaction, user):
             return (
-                    user == ctx.author
-                    and reaction.message.id == react_message.id
-                    and str(reaction.emoji) in number_emojis
+                user == ctx.author
+                and reaction.message.id == react_message.id
+                and str(reaction.emoji) in number_emojis
             )
 
         # Collect up to 3 song selections from user reactions
@@ -225,13 +225,13 @@ class RecommendCog(commands.Cog):
             # Check function to validate reactions
             def check(reaction, user):
                 return (
-                        user == ctx.author
-                        and reaction.message.id == msg.id
-                        and (
-                                str(reaction.emoji)
-                                in number_emojis[: len(recommended_songs)]
-                                + list(control_emojis.keys())
-                        )
+                    user == ctx.author
+                    and reaction.message.id == msg.id
+                    and (
+                        str(reaction.emoji)
+                        in number_emojis[: len(recommended_songs)]
+                        + list(control_emojis.keys())
+                    )
                 )
 
             try:
@@ -331,7 +331,7 @@ class RecommendCog(commands.Cog):
                     [song.track_name for song in selected_songs]
                 )
             )
-            ].copy()
+        ].copy()
 
         # Shuffle the matched songs to prevent bias
         matched_songs = matched_songs.sample(frac=1).reset_index(drop=True)
