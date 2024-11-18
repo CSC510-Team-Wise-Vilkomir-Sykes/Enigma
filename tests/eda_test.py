@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 from src.eda import get_top_songs, get_top_artists, get_longest_charting_songs
 
+
 class TestEDA(unittest.TestCase):
 
     def setUp(self):
@@ -119,6 +120,7 @@ class TestEDA(unittest.TestCase):
         df = get_top_songs(self.conn)
         self.assertEqual(len(df), 10)
         self.assertIn('Song13', df['title'].values)
+
 
 if __name__ == '__main__':
     unittest.main()
