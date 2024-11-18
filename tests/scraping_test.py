@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 from src.scraper import get_chart_links
 
+
 class TestScraper(unittest.TestCase):
 
     @patch('src.scraper.requests.get')
@@ -201,6 +202,7 @@ class TestScraper(unittest.TestCase):
         mock_get.return_value = Mock(status_code=200, content=sample_html)
         chart_links = get_chart_links()
         self.assertEqual(chart_links, [])
+
 
 if __name__ == '__main__':
     unittest.main()
