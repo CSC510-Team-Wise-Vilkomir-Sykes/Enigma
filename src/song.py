@@ -7,7 +7,7 @@ track name, artist name, and genre.
 
 
 class Song:
-    def __init__(self, track_name, artist_name=None, genre=None):
+    def __init__(self, track_name, artist_name=None, genre=None, url=None):
         """Initializes a new Song instance.
 
     Args:
@@ -18,6 +18,7 @@ class Song:
         self.track_name = track_name  # The title of the song
         self.artist_name = artist_name  # The artist who performed the song
         self.genre = genre  # The genre of the song
+        self.url = url # The URL of the song retrieved from YouTube
 
     def __str__(self):
         """Returns a formatted string representation of the song.
