@@ -1,26 +1,24 @@
 <h1 align="center">
   Enigma 🤖 - A music recommender bot for Discord
-  
+
  [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </h1>
 
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
-[![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)
+[![GitHub Release](https://img.shields.io/github/release/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/releases)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)
 [![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)
-[![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)
-[![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)
-[![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)
+[![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/graphs/contributors)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)
 ![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)
-[![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
-[![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)
-[![autopep8](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
-[![Syntax Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml)
-[![Style Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml)
-
+{need doi badge}
+Code coverage (develop):[![Running Code Coverage](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml)
+Syntax checker and code formatter: [![Code checker](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml)
+Style checker: [![Style Check](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml/badge.svg?branch=develop)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml)
+Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/github-actions-build.yml)
 
 </div>
 
@@ -44,7 +42,7 @@
 </ul>
 If you want to get added to the music server on discord to test the bot, drop an email to spriyad2@ncsu.edu
 </div>
-  
+
 <h1> Features added by Group 87</h1>
 
 <div>
@@ -62,7 +60,7 @@ If you want to get added to the music server on discord to test the bot, drop an
 <h1> ⚒️ Installation Procedure </h1>
 
 
-## 1. Prerequisites 
+## 1. Prerequisites
 
 Installation Guides:
   * [Git Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
@@ -75,7 +73,7 @@ Installation Guides:
 First, clone the repository and cd into the folder:
 
 ```
-$ git clone https://github.com/CSC510-Team87/Enigma.git
+$ git clone https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.git
 $ cd Enigma
 ```
 
@@ -84,7 +82,7 @@ $ cd Enigma
 
 ```
 $ pip install -r requirements.txt
-$ python bot.py 
+$ python bot.py
 ```
 
 Use /join to get the bot join the same voice chanel as you. You can now use the discord bot to give music recommendations! Use /help to see all functionalities of bot.
@@ -111,13 +109,13 @@ What We've Done:
 What We've Yet To Do:
 1. Allow for seemless transitions between songs by automatically detecting when a song is about to finish, the pre-loading the next song in the queue.
 2. Have the database of song recommendations update automatically for when new songs come out
-3. Improved sound quality of the audio playback to be fully integrated into Discord's built in volume adjuster (currently peaks the audio in some extreme cases) 
+3. Improved sound quality of the audio playback to be fully integrated into Discord's built in volume adjuster (currently peaks the audio in some extreme cases)
 
 
 
 <h1>📖 Documentation</h1>
 
-Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>  
+Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>
 
 
 <h1> 👥 Contributors <a name="Contributors"></a> </h1>
