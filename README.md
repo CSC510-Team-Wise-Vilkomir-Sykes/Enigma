@@ -54,14 +54,6 @@
 
 ---
 
-### **Key Changes:**
-1. **Linearity:** Badges are placed in a single row to avoid clutter.  
-2. **Center Alignment:** The badges maintain visual symmetry.  
-3. **Compact Styling:** Removed unnecessary line breaks for a streamlined look.  
-
-Let me know if you'd like further adjustments!
-
----
 
 ## **Features**
 
