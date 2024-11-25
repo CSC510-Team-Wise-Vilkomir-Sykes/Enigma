@@ -1,4 +1,4 @@
-## 1. Prerequisites 
+## 1. Prerequisites
 
 Installation Guides:
   * [Git Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
@@ -11,7 +11,7 @@ Installation Guides:
 First, clone the repository and cd into the folder:
 
 ```
-$ git clone https://github.com/CSC510-Team87/Enigma.git
+$ git clone https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.git
 $ cd Enigma
 ```
 
@@ -20,7 +20,7 @@ $ cd Enigma
 
 ```
 $ pip install -r requirements.txt
-$ python bot.py 
+$ python bot.py
 ```
 
 Use /join to get the bot join the same voice chanel as you. You can now use the discord bot to give music recommendations! Use /help to see all functionalities of bot.
