@@ -118,6 +118,8 @@ Notes:
 """
 
 import asyncio
+from multiprocessing.forkserver import set_forkserver_preload
+from urllib.parse import urljoin
 
 import discord
 from discord.ext.commands import bot
@@ -130,6 +132,9 @@ from discord.ext import commands
 from src.song import Song
 from src.utils import searchSong, random_25
 import yt_dlp as youtube_dl
+
+from io import BytesIO
+import aiohttp
 
 # Suppress noise from yt-dlp
 youtube_dl.utils.bug_reports_message = lambda: ""
@@ -301,7 +306,6 @@ class SongQueueCog(commands.Cog):
 		- The `yt_dlp` library is used for extracting audio streams from YouTube; ensure compliance with YouTube's terms of service when using this functionality.
 		- Volume levels are normalized between 0.0 and 1.0 internally, corresponding to 0-100% for user interactions.
 		- Error handling is implemented to manage invalid inputs and unexpected states, enhancing the robustness of the bot.
-
 	"""
 
 	def __init__(self, bot):
@@ -410,6 +414,8 @@ class SongQueueCog(commands.Cog):
 				ctx, "I am currently not connected to a voice channel"
 			)
 
+
+
 	@commands.command(name="pause", help="Pauses the song")
 	async def pause(self, ctx):
 		"""
@@ -444,6 +450,8 @@ class SongQueueCog(commands.Cog):
 			await BotState.log_and_send(
 				ctx, "I am currently not connected to a voice channel"
 			)
+
+
 
 	@commands.command(name="unpause", help="Unpauses the song")
 	async def unpause(self, ctx):
@@ -480,6 +488,8 @@ class SongQueueCog(commands.Cog):
 				ctx, "I am currently not connected to a voice channel"
 			)
 
+
+
 	@commands.command(name="queue", help="Queue a custom song")
 	async def queue(self, ctx, *, query):
 		"""
@@ -487,7 +497,10 @@ class SongQueueCog(commands.Cog):
 			The `/queue` command adds a song to the end of the current song queue based on the provided query.
 
 		Why:
-			Allowing users to add songs to the queue ensures that the playlist reflects the community's preferences and accommodates dynamic song selection.
+			Allowing users to add songs to the current song queue based on the provided query.
+
+		Why:
+			Allowing users to add songs to thequeue ensures that the playlist reflects the community's preferences and accommodates dynamic song selection.
 
 		How:
 			- Validates and converts the user's query into a `Song` object.
@@ -499,13 +512,14 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation, containing information such as the channel, author, and guild.
-			query (str): The search query or name of the song to be added to the queue.
+		query (str): The search query or name of the song to be added to the queue.
 		"""
 		song = await self.ensure_song(ctx, query)
 		if song is not None:
 			# remember that commands expect queue idx to start at 1
 			if await self.insert_song(ctx, len(BotState.song_queue) + 1, song):
 				await BotState.log_and_send(ctx, f"Queued song: {song}")
+				await self.preload_songs(ctx)
 
 	@commands.command(name="insert", help="Insert a custom song")
 	async def insert(self, ctx, *, params):
@@ -527,7 +541,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation, containing information such as the channel, author, and guild.
-			params (str): A string containing the target index and song query, separated by a space (e.g., "2 Shape of You").
+		params (str): A string containing the target index and song query, separated by a space (e.g., "2 Shape of You").
 		"""
 		idx, query = params.split(" ", maxsplit=1)
 		song = await self.ensure_song(ctx, query)
@@ -556,7 +570,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation, containing information such as the channel, author, and guild.
-			query (str): The search query or name of the song to be inserted at the front of the queue.
+		query (str): The search query or name of the song to be inserted at the front of the queue.
 		"""
 		# remember that commands expect queue idx to start at 1
 		await self.insert(ctx, params=f"1 {query}")
@@ -611,7 +625,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			idx (int or str): The track number of the song to be removed.
+		idx (int or str): The track number of the song to be removed.
 
 		Returns:
 			Song or None: The removed `Song` object if the deletion was successful, `None` otherwise.
@@ -643,14 +657,14 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			query (str): The user's search query or song name.
+		query (str): The user's search query or song name.
 
 		Returns:
 			Song or None: The created `Song` object if the query is valid, `None` otherwise.
 		"""
 		query = query.strip()
 		if query:
-			return Song(query)
+			return Song(track_name=query, url=None)
 		else:
 			await BotState.log_and_send(ctx, "Please enter a song")
 			return None
@@ -676,7 +690,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			idx (int or str): The track number input by the user.
+		idx (int or str): The track number input by the user.
 
 		Returns:
 			int or None: The zero-based index if valid, `None` otherwise.
@@ -712,7 +726,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			idx (int or str): The insertion number input by the user.
+		idx (int or str): The insertion number input by the user.
 
 		Returns:
 			int or None: The zero-based index if valid, `None` otherwise.
@@ -746,16 +760,18 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			song (Song): The `Song` object representing the song to be played.
+		song (Song): The `Song` object representing the song to be played.
 
 		Returns:
 			None
 		"""
 		voice_client = ctx.message.guild.voice_client
 		if voice_client:
-			# Search for the song on YouTube
-			info = ytdl.extract_info(f"ytsearch:{song}", download=False)["entries"][0]
-			url = info["url"]
+			url = song.url
+
+			if url is None:
+				await BotState.log_and_send(ctx, f"Error playing song {song}: No URL found")
+				return
 
 			if BotState.is_in_use():
 				BotState.stop(voice_client)
@@ -782,6 +798,7 @@ class SongQueueCog(commands.Cog):
 			BotState.current_song_playing = song
 
 			await BotState.log_and_send(ctx, f"Now playing: **{song}**")
+			await self.preload_songs(ctx)  # Preload after starting to play
 		else:
 			await BotState.log_and_send(
 				ctx, "I am currently not connected to a voice channel"
@@ -814,7 +831,10 @@ class SongQueueCog(commands.Cog):
 		voice_client = ctx.guild.voice_client
 
 		BotState.log_command(ctx, "Finished playing song")
+		current_song = BotState.current_song_playing
 		BotState.stop(voice_client)
+
+		# No need to clean up since songs are kept in memory
 
 		if BotState.is_in_voice_channel(voice_client):
 			if BotState.is_looping():
@@ -822,6 +842,8 @@ class SongQueueCog(commands.Cog):
 			else:
 				if len(BotState.song_queue) > 0:
 					await self.play_next_song(ctx)
+
+		await self.preload_songs(ctx)  # Preload after song ends
 
 	@commands.command(
 		name="next", help="Immediately jump to the next song in the queue"
@@ -898,7 +920,7 @@ class SongQueueCog(commands.Cog):
 			```
 			Now playing: Shape of You by Ed Sheeran
 
-			Current Queue:
+		Current Queue:
 			1. Bohemian Rhapsody by Queen
 			2. Imagine by John Lennon
 			```
@@ -978,7 +1000,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			idx (int or str): The track number to jump to.
+		idx (int or str): The track number to jump to.
 
 		Returns:
 			None
@@ -994,7 +1016,7 @@ class SongQueueCog(commands.Cog):
 
 	@commands.command(
 		name="move",
-		help="Move a song from one position to another in the queue",
+		help="Move a song from one position to anotherin the queue",
 	)
 	async def move(self, ctx, *, params):
 		"""
@@ -1015,7 +1037,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			params (str): A string containing the source and destination track numbers, separated by a space (e.g., "2 5").
+		params (str): A string containing the source and destination track numbers, separated by a space (e.g., "2 5").
 
 		Returns:
 			None
@@ -1057,7 +1079,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			idx (int or str): The track number of the song to be removed.
+		idx (int or str): The track number of the song to be removed.
 
 		Returns:
 			None
@@ -1087,7 +1109,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			src_idx (int or str): The track number of the song to be moved to the front.
+		src_idx (int or str): The track number of the song to be moved to the front.
 
 		Returns:
 			None
@@ -1114,7 +1136,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-			src_idx (int or str): The track number of the song to be moved to the back.
+		src_idx (int or str): The track number of the song to be moved to the back.
 
 		Returns:
 			None
@@ -1275,3 +1297,30 @@ class SongQueueCog(commands.Cog):
 			None
 		"""
 		await client.add_cog(SongQueueCog(client))
+
+	async def preload_songs(self, ctx):
+		"""
+		Preloads the audio data for the next 5 songs in the queue into memory.
+		"""
+		preload_count = 5
+		songs_to_preload = BotState.song_queue[:preload_count]
+		for song in songs_to_preload:
+			if song.url is None:
+				try:
+					# Extract information without downloading
+					info = ytdl.extract_info(f"ytsearch:{song.track_name}", download=False)["entries"][0]
+					url = info["url"]
+
+					song.url = url
+
+					# # Asynchronously download the audio data
+					# async with aiohttp.ClientSession() as session:
+					# 	async with session.get(url) as resp:
+					# 		await BotState.log_and_send(ctx, f"starting session {url}")
+					# 		if resp.status != 200:
+					# 			raise Exception(f"Failed to download song: {song.track_name}")
+					# 		song.audio_data = BytesIO(await resp.read())
+					# 		print("audio data", song.audio_data)
+					# 		await BotState.log_and_send(ctx, f"song.audio_data updated")
+				except Exception as e:
+					await BotState.log_and_send(ctx, f"Error preloading song {song}: {e}")
