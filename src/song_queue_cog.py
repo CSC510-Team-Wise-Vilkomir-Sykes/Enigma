@@ -497,7 +497,10 @@ class SongQueueCog(commands.Cog):
 			The `/queue` command adds a song to the end of the current song queue based on the provided query.
 
 		Why:
-			Allowing users to add songs to the queue ensures that the playlist reflects the community's preferences and accommodates dynamic song selection.
+			Allowing users to add songs to the current song queue based on the provided query.
+
+		Why:
+			Allowing users to add songs to thequeue ensures that the playlist reflects the community's preferences and accommodates dynamic song selection.
 
 		How:
 			- Validates and converts the user's query into a `Song` object.
@@ -591,8 +594,9 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-		idx (int or str): The target index at which to insert the song.
+			idx (int or str): The target index at which to insert the song.
 			song (Song): The `Song` object to be inserted into the queue.
+
 		Returns:
 			bool: `True` if the insertion was successful, `False` otherwise.
 		"""
@@ -807,6 +811,7 @@ class SongQueueCog(commands.Cog):
 
 		Why:
 			Managing the end of song playback ensures that the music queue progresses smoothly, automatically playing the next song or repeating as per the user's preferences without requiring manual intervention.
+
 		How:
 			- Logs the completion of the current song.
 			- Stops the current playback state.
@@ -818,7 +823,7 @@ class SongQueueCog(commands.Cog):
 
 		Parameters:
 			ctx (commands.Context): The context of the command invocation.
-		error (Exception): Any error that occurred during playback.
+			error (Exception): Any error that occurred during playback.
 
 		Returns:
 			None
@@ -976,7 +981,7 @@ class SongQueueCog(commands.Cog):
 
 		BotState.log_command(ctx, "Acknowledged")
 
-	@commands.command(name="jumpto", help="Jump to a specifictrack number")
+	@commands.command(name="jumpto", help="Jump to a specific track number")
 	async def jumpto(self, ctx, *, idx):
 		"""
 		What:
