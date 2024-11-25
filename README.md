@@ -11,9 +11,9 @@
 [![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)
 [![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/graphs/contributors)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)
-![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/issues?q=is%3Aissue+is%3Aopen)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/pulls?q=is%3Apr+is%3Aopen)
+[![Supports Python](https://img.shields.io/pypi/pyversions/pytest)](https://www.python.org/)
 {need doi badge}
 Code coverage (develop):[![Running Code Coverage](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml)
 Syntax checker and code formatter: [![Code checker](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml)
