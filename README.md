@@ -1,5 +1,5 @@
-# **🎵 Enigma 🎶**  
-**Your Ultimate Music Recommender Bot for Discord**
+<h1 align="center">🎵 Enigma 🎶</h1>  
+<p align="center"><b>Your Ultimate Music Recommender Bot for Discord</b></p>
 
 <p align="center">
   <a href="https://github.com/ellerbrock/open-source-badges/">
@@ -7,22 +7,59 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://www.gnu.org/licenses/gpl-3.0">
+    <img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/releases">
+    <img src="https://img.shields.io/github/release/CSC510-Team87/Enigma.svg" alt="Latest Release">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma">
+    <img src="https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg" alt="Repository Size">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/language-Python-1f425f.svg" alt="Language">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/graphs/contributors">
+    <img src="https://img.shields.io/badge/contributors-3-green" alt="Contributors">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/issues">
+    <img src="https://img.shields.io/badge/issues-0-yellow" alt="Open Issues">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/pulls">
+    <img src="https://img.shields.io/badge/pull%20requests-0-yellow" alt="Pull Requests">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/pypi/pyversions/pytest" alt="Python Versions">
+  </a>
+  <a href="https://doi.org/10.5281/zenodo.14032034">
+    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg" alt="DOI">
+  </a>
+  <a href="https://codecov.io/gh/CSC510-Team87/Enigma">
+    <img src="https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR" alt="Code Coverage">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml">
+    <img src="https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg" alt="Build Status">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml">
+    <img src="https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev" alt="Code Formatter">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml">
+    <img src="https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg" alt="Syntax Checker">
+  </a>
+  <a href="https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml">
+    <img src="https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg" alt="Style Checker">
+  </a>
+</p>
 
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
-[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)  
-[![Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma)  
-[![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)  
-[![Contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)  
-[![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)  
-[![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)  
-[![Python Versions](https://img.shields.io/pypi/pyversions/pytest)](https://www.python.org/)  
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)  
-[![Codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)  
-[![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)  
-[![autopep8](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)  
-[![Syntax Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml)  
-[![Style Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml)  
+---
 
+### **Key Changes:**
+1. **Linearity:** Badges are placed in a single row to avoid clutter.  
+2. **Center Alignment:** The badges maintain visual symmetry.  
+3. **Compact Styling:** Removed unnecessary line breaks for a streamlined look.  
+
+Let me know if you'd like further adjustments!
 
 ---
 
