@@ -1,148 +1,169 @@
-<h1 align="center">
-  Enigma 🤖 - A music recommender bot for Discord
-  
- [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
-</h1>
+# **🎵 Enigma 🎶**  
+**Your Ultimate Music Recommender Bot for Discord**
+
+<p align="center">
+  <a href="https://github.com/ellerbrock/open-source-badges/">
+    <img src="https://badges.frapsoft.com/os/v3/open-source.png?v=103" alt="Open Source Love"/>
+  </a>
+</p>
 
 <div align="center">
 
-[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)
-[![GitHub Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)
-[![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)
-[![GitHub contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)
-[![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)
-[![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)
-![Supports Python](https://img.shields.io/pypi/pyversions/pytest)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)
-[![codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)
-[![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)
-[![autopep8](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)
-[![Syntax Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml)
-[![Style Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml)
-
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
+[![GitHub Release](https://img.shields.io/github/release/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma/releases)  
+[![Repo Size](https://img.shields.io/github/repo-size/CSC510-Team87/Enigma.svg)](https://github.com/CSC510-Team87/Enigma)  
+[![Language](https://img.shields.io/badge/language-Python-1f425f.svg)](https://www.python.org/)  
+[![Contributors](https://img.shields.io/badge/contributors-3-green)](https://github.com/CSC510-Team87/Enigma/graphs/contributors)  
+[![Open Issues](https://img.shields.io/badge/issues-0-yellow)](https://github.com/CSC510-Team87/Enigma/issues)  
+[![Pull Requests](https://img.shields.io/badge/pull%20requests-0-yellow)](https://github.com/CSC510-Team87/Enigma/pulls)  
+[![Python Versions](https://img.shields.io/pypi/pyversions/pytest)](https://www.python.org/)  
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14032034.svg)](https://doi.org/10.5281/zenodo.14032034)  
+[![Codecov](https://codecov.io/gh/CSC510-Team87/Enigma/branch/dev/graph/badge.svg?token=OEPEJ0W8CR)](https://codecov.io/gh/CSC510-Team87/Enigma)  
+[![Build Status](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/github-actions-build.yml)  
+[![autopep8](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml/badge.svg?branch=dev)](https://github.com/CSC510-Team87/Enigma/actions/workflows/code-formatter.yml)  
+[![Syntax Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/syntax-checker.yml)  
+[![Style Checker](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml/badge.svg)](https://github.com/CSC510-Team87/Enigma/actions/workflows/style-checker.yml)  
 
 </div>
 
-<p align="center">
-    <a href="https://github.com/rahulgautam21/Enigma/issues/new/choose">Report Bug</a>
-    ·
-    <a href="https://github.com/rahulgautam21/Enigma/issues/new/choose">Request Feature</a>
-</p>
+---
 
-<h1> 💡 Features </h1>
+## **Features**
 
-<div>
-<ul>
-  <li>Recommend songs based on user input and play them on discord voice channel</li>
-  <li>Can be used by teams/friends to listen to the same songs together</li>
-  <li>Acts as an amplifier - can be used to play same music on multiple speakers to give a surround sound effect and increase volume output</li>
-  <li>Ability to toggle music pause/resume</li>
-  <li>Ability to play custom song without having to search the song on youtube</li>
-  <li>Ability to switch back and forth between songs</li>
-  <li>Ability to move songs around in the queue and replay songs</li>
-</ul>
-If you want to get added to the music server on discord to test the bot, drop an email to spriyad2@ncsu.edu
-</div>
-  
-<h1> Features added by Group 87</h1>
+- Recommends songs based on user input and plays them in Discord voice channels.  
+- Designed for teams or friends to enjoy music together.  
+- Acts as an amplifier to play the same music on multiple speakers, creating a surround sound effect and increasing volume output.  
+- Provides controls to toggle music playback (pause/resume).  
+- Plays custom songs directly without searching on YouTube.  
+- Enables users to switch back and forth between songs, manage the queue, and replay songs.  
+- Dynamic queue management: Custom songs are added to the queue instead of being played instantly.  
+- Multi-channel support: The bot maintains a consistent internal state across several voice channels.  
+- Replay flexibility: Supports both instant and delayed replay of songs.  
+- Advanced queue operations:
+  - Insert songs at any point in the queue.  
+  - Reorder songs in the queue dynamically.  
+  - Remove songs from the queue.  
+- Improved recommendations:
+  - Recommendations are dynamically generated from the current queue.  
+  - Based on specific artists and genres, not just "liked" or "disliked" songs.  
 
-<div>
-<ul>
-  <li>Custom songs are now put into the queue dynamically instead of being played instantly</li>
-  <li>The bot is able to be used across several voice channels while still keeping a consistent internal state</li>
-  <li>The bot has both instant and delayed replay of songs</li>
-  <li>The bot can have songs inserted at any point in the queue</li>
-  <li>The bot can have songs in the queue moved around to any arbitrary order even while running</li>
-  <li>Songs can be removed from the queue</li>
-  <li>More dynamic recommendation features: Recommendations will be made now from an arbitrary number of songs already present in the queue, and are based on particular artists and genres rather than simply "liked" and "disliked" songs</li>
-</ul>
-</div>
-
-<h1> ⚒️ Installation Procedure </h1>
+---
 
 
-## 1. Prerequisites 
+## **Group 6 Contributions**
 
-Installation Guides:
-  * [Git Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-  * [IDE Installation Guide (VSCode)](https://code.visualstudio.com/docs/setup/setup-overview)
-  * Install FFMPEG from [FFMPEG builds](https://www.gyan.dev/ffmpeg/builds), extract it and add it to your path [How to add FFMPEG to Path](https://www.thewindowsclub.com/how-to-install-ffmpeg-on-windows-10#:~:text=Add%20FFmpeg%20to%20Windows%20path%20using%20Environment%20variables&text=In%20the%20Environment%20Variables%20window,bin%5C%E2%80%9D%20and%20click%20OK.)
-  * [Set up a bot and invite it to your server](https://discordpy.readthedocs.io/en/stable/discord.html)
+### **Improvements and Features Added**
 
-## 2. Running Code
+1. **Preloading Songs in Queue:**  
+   - Previously, when the `/next` command was used, the bot would take time to download the next song, causing a buffering delay.  
+   - With the new addition, the first five songs in the queue are preloaded (pre-downloaded).  
+   - Now, the bot plays the next song instantly when `/next` is issued, eliminating download wait times.
 
-First, clone the repository and cd into the folder:
+2. **Volume Control Command:**  
+   - Added the `/volume <percentage>` command to adjust playback volume dynamically.  
+   - Example: `/volume 50` sets the bot’s playback volume to 50%.
 
-```
-$ git clone https://github.com/CSC510-Team87/Enigma.git
-$ cd Enigma
-```
+3. **Exploratory Data Analysis (EDA) Features:**  
+   - Developed functions in `eda.py` to analyze music data and provide insights to users:  
+     - `!top_songs`: Displays the top 10 songs based on Billboard charts.  
+     - `!top_songs add`: Displays the top 10 songs and adds them to the playlist.  
+     - `!top_artists`: Displays the top 10 artists.  
+     - `!longest_charting`: Displays the top 10 longest-charting songs.  
+     - `!longest_charting add`: Displays and adds the longest-charting songs to the playlist.  
+   - These functions integrate seamlessly with the bot commands, providing users with valuable music insights.
 
-### Create a .env file with the discord token info: DISCORD_TOKEN=#SECRET_TOKEN#
-### Join a discord server and connect to any voice channel.
+4. **Web Scraping for Music Data:**  
+   - Introduced web scraping functionality in `scraper.py` to extract and update music charts.  
+   - Features:  
+     - Initial scraping of Billboard music charts.  
+     - Periodic updates using the `schedule` module to ensure data freshness.
 
-```
-$ pip install -r requirements.txt
-$ python bot.py 
-```
-
-Use /join to get the bot join the same voice chanel as you. You can now use the discord bot to give music recommendations! Use /help to see all functionalities of bot.
-
-<h1> 🚀 Video 1 - Why you should choose this project for project 3 (Team 87) </h1>
-
-<a href="https://youtu.be/HvIVuy2wMXY">https://youtu.be/HvIVuy2wMXY</a>
-
-<h1> 🚀 Video 2 - New Feature Showcase </h1>
-
-<a href="https://youtu.be/fvlnV4p7qdk">https://youtu.be/fvlnV4p7qdk</a>
-
-<h1>📍RoadMap </h1>
-
-What We've Done:
-1. Custom songs are now put into the queue dynamically instead of being played instantly
-2. The bot is able to be used across several voice channels while still keeping a consistent internal state
-3. The bot has both instant and delayed replay of songs
-4. The bot can have songs inserted at any point in the queue
-5. The bot can have songs in the queue moved around to any arbitrary order even while running
-6. Songs can be removed from the queue
-7. More dynamic recommendation features: Recommendations will be made now from an arbitrary number of songs already present in the queue, and are based on particular artists and genres rather than simply "liked" and "disliked" songs
-
-What We've Yet To Do:
-1. Allow for seemless transitions between songs by automatically detecting when a song is about to finish, the pre-loading the next song in the queue.
-2. Have the database of song recommendations update automatically for when new songs come out
-3. Improved sound quality of the audio playback to be fully integrated into Discord's built in volume adjuster (currently peaks the audio in some extreme cases) 
+---
 
 
+## **🚀 Installation Procedure**
 
-<h1>📖 Documentation</h1>
+### **1. Prerequisites**
 
-Documentation for the code available at - <a href="https://saswat123.github.io/Enigma/">Enigma Docs</a>  
+- [Git Installation Guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)  
+- [VSCode Setup Guide](https://code.visualstudio.com/docs/setup/setup-overview)  
+- [Install FFMPEG](https://www.gyan.dev/ffmpeg/builds) and add it to your path. [Guide](https://www.thewindowsclub.com/how-to-install-ffmpeg-on-windows-10#:~:text=Add%20FFmpeg%20to%20Windows%20path%20using%20Environment%20variables)  
+- [Set up and invite a bot](https://discordpy.readthedocs.io/en/stable/discord.html).
 
+---
 
-<h1> 👥 Contributors <a name="Contributors"></a> </h1>
+### **2. Running Code**
 
-### Group 87
+1. Clone the repository and navigate to the directory:  
+   ```bash
+   $ git clone https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.git
+   $ cd Enigma
+   ```
+2. Create a `.env` file with the following:  
+   `DISCORD_TOKEN=#YOUR_SECRET_TOKEN#`  
+3. Install dependencies and run the bot:  
+   ```bash
+   $ pip install -r requirements.txt
+   $ python bot.py
+   ```
+4. Join a Discord server, connect to a voice channel, and interact with the bot.  
+   Use `/join` to invite the bot to your channel and `/help` for command options.
 
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/gwenmason125"><img src="" width="75px;" alt=""/><br /><sub><b>Gwen Mason</b></sub></a></td>
-    <td align="center"><a href="https://github.com/yicharlieyi"><img src="" width="75px;" alt=""/><br /><sub><b>Yi Zhang</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/kevindai2002"><img src="" width="75px;" alt=""/><br /><sub><b>Kevin Dai</b></sub></a><br /></td>
+---
 
-  </tr>
-</table>
+## **📹 Showcase Videos**
 
-</table>
+### [Why Choose This Project?](https://youtu.be/HvIVuy2wMXY)  
+### [Feature Showcase](https://youtu.be/fvlnV4p7qdk)
 
-<h1> Contributing </h1>
+---
 
-Please see [`CONTRIBUTING`](CONTRIBUTING.md) for contributing to this project.
+## **📍Roadmap**
 
-<h1> Data </h1>
+### Completed:
+1. Dynamic queuing and replay options.  
+2. Advanced queue management (insert, move, delete).  
+3. Multi-channel support with consistent internal state.  
+4. Enhanced recommendation logic based on artists/genres.  
+5. EDA features integrated for music insights.  
+6. Web scraping functionality for periodic music chart updates.
 
-The data for this project is present [here](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019)
+### Planned:
+1. Seamless transitions with preloaded songs.  
+2. Auto-updating song recommendation database.  
+3. Improved sound quality with Discord’s volume adjuster.
 
-<h1> Support </h1>
-For any and all support reach out to spriyad2@ncsu.edu or gwenmason125@ncsu.edu
-For bug ticket request, use the internal Github ticketing features, or reach out to one of the emails above.
+---
+
+## **📖 Documentation**
+
+Find the full documentation [here](https://saswat123.github.io/Enigma/).
+
+---
+
+## **👥 Contributors**
+
+| Contributor       | GitHub Profile                         |  
+|-------------------|----------------------------------------|  
+| Katerina Vilkomir | [Kii4ka](https://github.com/Kii4ka)    |  
+| Madeline Wise     | [madewise](https://github.com/madewise)|  
+| Jackson Sykes     | [ScenicJaguar101](https://github.com/ScenicJaguar101) |
+
+---
+
+## **Contributing**
+
+For contributing, see the [CONTRIBUTING](CONTRIBUTING.md) guide.
+
+---
+
+## **Data**
+
+The project dataset is available [here](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019).
+
+---
+
+## **Support**
+
+For bugs or feature requests, use GitHub’s issue tracker or email the contributors.
+
