@@ -23,9 +23,9 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 </div>
 
 <p align="center">
-    <a href="https://github.com/rahulgautam21/Enigma/issues/new/choose">Report Bug</a>
+    <a href="https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/issues/new/choose">Report Bug</a>
     ·
-    <a href="https://github.com/rahulgautam21/Enigma/issues/new/choose">Request Feature</a>
+    <a href="https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/issues/new/choose">Request Feature</a>
 </p>
 
 ---
