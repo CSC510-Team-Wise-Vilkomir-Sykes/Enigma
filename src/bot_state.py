@@ -1,20 +1,38 @@
 """
 bot_state.py
 
-This module defines the BotState class, which manages the shared state of the
-Discord bot's music playback, including
-the song queue, playback status, and logging.
+This module defines the `BotState` class, which manages the shared state of the Discord bot's music playback,
+including the song queue, playback status, and logging.
 
-Attributes:
-	- song_queue (list): A queue of songs selected by the user.
-	- current_song_playing (Song): The currently playing song.
-	- _is_paused (bool): Indicates whether the bot is currently paused.
-	- _is_looping (bool): Indicates whether the bot is in looping mode.
-	- logger (logging.Logger): Logger instance for tracking bot commands and actions.
+**Attributes**:
+- `song_queue` (list): A queue of songs selected by the user.
+- `current_song_playing` (Song): The currently playing song.
+- `_is_paused` (bool): Indicates whether playback is paused.
+- `_is_looping` (bool): Indicates whether looping mode is enabled.
+- `logger` (logging.Logger): Logger instance for tracking bot commands and actions.
+- `volume` (float): Playback volume (default: 50%).
+
+**Why**:
+Centralizes the bot's state and playback control, making it easy to manage music-related operations and
+log actions consistently.
+
+**How**:
+- Use class-level methods to interact with shared attributes and perform actions like pause, unpause, stop, and volume control.
+- Log user interactions with commands and playback.
 """
 
-
 class BotState:
+	"""
+	Manages the shared state and playback control of the Discord bot.
+
+	**Why**: Provides centralized control over the bot's music operations, ensuring consistent state management
+	and logging across commands and events.
+
+	**How**:
+	- Use methods like `pause`, `unpause`, and `stop` to manage playback.
+	- Adjust settings such as volume or looping mode using class-level attributes and methods.
+	"""
+
 	song_queue = []  # Queue of songs selected by the user
 	current_song_playing = None  # Currently playing song, if any
 	_is_paused = False  # Indicates if playback is paused
@@ -24,63 +42,81 @@ class BotState:
 
 	@classmethod
 	def log_command(cls, ctx, msg):
-		"""Logs a command action with the specified message.
+		"""
+		Logs a command action with the specified message.
 
-			Args:
-				ctx (Context): The context of the command, used to access author and command name.
-				msg (str): The message to log, providing additional details.
+		:param ctx: The context of the command, used to access author and command name.
+		:type ctx: Context
+		:param msg: The message to log, providing additional details.
+		:type msg: str
+
+		**Why**: Keeps track of user commands and their outcomes for debugging and auditing purposes.
 		"""
 		cls.logger.info(f"ENIGMA ({ctx.author.name} /{ctx.command.name}) {msg}")
 
 	@classmethod
 	async def log_and_send(cls, ctx, msg):
-		"""Sends a message to the user and logs the command action.
+		"""
+		Sends a message to the user and logs the command action.
 
-			Args:
-				ctx (Context): The context of the command, used for logging and sending messages.
-				msg (str): The message to send and log.
+		:param ctx: The context of the command, used for logging and sending messages.
+		:type ctx: Context
+		:param msg: The message to send and log.
+		:type msg: str
+
+		**Why**: Ensures consistent communication with users while maintaining logs for actions taken.
 		"""
 		await ctx.send(msg)  # Send message to the Discord channel
 		cls.log_command(ctx, msg)  # Log the command action
 
 	@classmethod
 	def is_in_use(cls):
-		"""Checks if a song is currently playing.
+		"""
+		Checks if a song is currently playing.
 
-			Returns:
-				bool: True if a song is playing, False otherwise.
+		:return: True if a song is playing, False otherwise.
+		:rtype: bool
+
+		**Why**: Determines whether the bot is active in playing music.
 		"""
 		return cls.current_song_playing is not None
 
 	@classmethod
 	def is_paused(cls):
-		"""Checks if playback is paused.
+		"""
+		Checks if playback is paused.
 
-			Returns:
-				bool: True if playback is paused, False otherwise.
+		:return: True if playback is paused, False otherwise.
+		:rtype: bool
+
+		**Why**: Provides the bot's current playback state for decision-making in commands.
 		"""
 		return cls._is_paused
 
 	@classmethod
 	def is_in_voice_channel(cls, voice_client):
-		"""Checks if the bot is connected to a voice channel.
+		"""
+		Checks if the bot is connected to a voice channel.
 
-			Args:
-				voice_client (VoiceClient): The Discord voice client instance.
+		:param voice_client: The Discord voice client instance.
+		:type voice_client: VoiceClient
+		:return: True if the bot is connected to a voice channel, False otherwise.
+		:rtype: bool
 
-			Returns:
-				bool: True if the bot is connected to a voice channel,
-                False otherwise.
+		**Why**: Ensures that playback operations only occur when the bot is in a valid voice channel.
 		"""
 		return voice_client is not None and voice_client.is_connected()
 
 	@classmethod
 	def pause(cls, voice_client):
-		"""Pauses playback if a song is currently playing and the bot is connected
+		"""
+		Pauses playback if a song is currently playing and the bot is connected
         to a voice channel.
 
-			Args:
-				voice_client (VoiceClient): The Discord voice client instance.
+		:param voice_client: The Discord voice client instance.
+		:type voice_client: VoiceClient
+
+		**Why**: Temporarily halts music playback without clearing the queue or playback state.
 		"""
 		if not cls._is_paused and cls.is_in_use():
 			if voice_client is not None and not voice_client.is_paused():
@@ -89,10 +125,13 @@ class BotState:
 
 	@classmethod
 	def unpause(cls, voice_client):
-		"""Resumes playback if paused and the bot is connected to a voice channel.
+		"""
+		Resumes playback if paused and the bot is connected to a voice channel.
 
-			Args:
-				voice_client (VoiceClient): The Discord voice client instance.
+		:param voice_client: The Discord voice client instance.
+		:type voice_client: VoiceClient
+
+		**Why**: Restarts playback after a pause, maintaining the playback state.
 		"""
 		if cls._is_paused and cls.is_in_use():
 			if voice_client is not None and voice_client.is_paused():
@@ -101,10 +140,13 @@ class BotState:
 
 	@classmethod
 	def stop(cls, voice_client):
-		"""Stops playback and resets playback-related attributes.
+		"""
+		Stops playback and resets playback-related attributes.
 
-			Args:
-				voice_client (VoiceClient): The Discord voice client instance.
+		:param voice_client: The Discord voice client instance.
+		:type voice_client: VoiceClient
+
+		**Why**: Ends playback and clears the current state when the bot leaves or stops music.
 		"""
 		if voice_client is not None and cls.is_in_use():
 			voice_client.stop()  # Stop playback on the voice client
@@ -113,29 +155,39 @@ class BotState:
 
 	@classmethod
 	def is_looping(cls):
-		"""Checks if the bot is in looping mode.
+		"""
+		Checks if the bot is in looping mode.
 
-			Returns:
-				bool: True if looping is enabled, False otherwise.
+		:return: True if looping is enabled, False otherwise.
+		:rtype: bool
+
+		**Why**: Identifies if the current song will be replayed after finishing.
 		"""
 		return cls._is_looping
 
 	@classmethod
 	def set_is_looping(cls, is_looping):
-		"""Sets the looping state of the bot.
+		"""
+		Sets the looping state of the bot.
 
-			Args:
-				is_looping (bool): The new looping state to set.
+		:param is_looping: The new looping state to set.
+		:type is_looping: bool
+
+		**Why**: Toggles looping mode for the currently playing song.
 		"""
 		cls._is_looping = is_looping  # Update the looping state
 
 	@classmethod
 	def set_volume(cls, voice_client, volume):
-		"""Sets the playback volume.
+		"""
+		Sets the playback volume.
 
-		Args:
-			voice_client (VoiceClient): The Discord voice client instance.
-			volume (float): The new volume level (0.0 to 1.0).
+		:param voice_client: The Discord voice client instance.
+		:type voice_client: VoiceClient
+		:param volume: The new volume level (0.0 to 1.0).
+		:type volume: float
+
+		**Why**: Provides volume control for playback, ensuring user preferences are met.
 		"""
 		if 0.0 <= volume <= 1.0:
 			cls.volume = volume
@@ -147,9 +199,12 @@ class BotState:
 
 	@classmethod
 	def get_volume(cls):
-		"""Gets the current playback volume.
+		"""
+		Gets the current playback volume.
 
-		Returns:
-			float: The current volume level (0.0 to 1.0).
+		:return: The current volume level (0.0 to 1.0).
+		:rtype: float
+
+		**Why**: Allows users to view the current volume level for playback.
 		"""
 		return cls.volume
