@@ -60,78 +60,79 @@ Notes:
 """
 
 class Song:
-	"""
-	What:
-		The `Song` class represents an individual music track, encapsulating its essential details such as the track name, artist name, and genre. It serves as a blueprint for creating song objects that can be utilized throughout the application for various functionalities like recommendations, playlist management, and display purposes.
+    """
+    What:
+        The `Song` class represents an individual music track, encapsulating its essential details such as the track name, artist name, and genre. It serves as a blueprint for creating song objects that can be utilized throughout the application for various functionalities like recommendations, playlist management, and display purposes.
 
-	Why:
-		A structured representation of songs is vital for any music-centric application. By defining a `Song` class, the module ensures that each song's data is consistently managed and easily accessible. This abstraction simplifies interactions with song data, enabling efficient processing, filtering, and display operations, thereby enhancing the overall functionality and user experience of the application.
+    Why:
+        A structured representation of songs is vital for any music-centric application. By defining a `Song` class, the module ensures that each song's data is consistently managed and easily accessible. This abstraction simplifies interactions with song data, enabling efficient processing, filtering, and display operations, thereby enhancing the overall functionality and user experience of the application.
 
-	How:
-		- **Initialization**: Create a `Song` instance by providing the track name, with optional parameters for artist name and genre. This allows for flexibility in representing songs with varying levels of detail.
+    How:
+        - **Initialization**: Create a `Song` instance by providing the track name, with optional parameters for artist name and genre. This allows for flexibility in representing songs with varying levels of detail.
 
-		- **String Representation**: The `__str__` method provides a readable string format of the song, which can be used for displaying song information in user interfaces or logs.
+        - **String Representation**: The `__str__` method provides a readable string format of the song, which can be used for displaying song information in user interfaces or logs.
 
-		- **Integration**: `Song` instances can be integrated with other components such as databases, recommendation engines, and user interfaces, facilitating seamless data flow and interaction within the application.
-	"""
+        - **Integration**: `Song` instances can be integrated with other components such as databases, recommendation engines, and user interfaces, facilitating seamless data flow and interaction within the application.
+    """
 
-	def __init__(self, track_name, artist_name=None, genre=None):
-		"""
-		What:
-			Initializes a new instance of the `Song` class with the specified track name, and optionally, the artist name and genre.
+    def __init__(self, track_name, artist_name=None, genre=None, url=None):
+        """
+        What:
+            Initializes a new instance of the `Song` class with the specified track name, and optionally, the artist name and genre.
 
-		Why:
-			Establishing a `Song` object with the necessary attributes ensures that each song's data is encapsulated in a consistent and accessible manner. This setup is essential for functionalities that depend on song metadata, such as generating recommendations, creating playlists, and displaying song information.
+        Why:
+            Establishing a `Song` object with the necessary attributes ensures that each song's data is encapsulated in a consistent and accessible manner. This setup is essential for functionalities that depend on song metadata, such as generating recommendations, creating playlists, and displaying song information.
 
-		How:
-			- **track_name (str)**: Mandatory parameter representing the name of the song.
-			- **artist_name (str, optional)**: Optional parameter for the artist's name. Defaults to `None` if not provided.
-			- **genre (str, optional)**: Optional parameter for the song's genre. Defaults to `None` if not provided.
+        How:
+            - **track_name (str)**: Mandatory parameter representing the name of the song.
+            - **artist_name (str, optional)**: Optional parameter for the artist's name. Defaults to `None` if not provided.
+            - **genre (str, optional)**: Optional parameter for the song's genre. Defaults to `None` if not provided.
 
-		Example:
-			```python
-			# Creating a song with all details
-			song = Song(track_name="Shape of You", artist_name="Ed Sheeran", genre="Pop")
+        Example:
+            ```python
+            # Creating a song with all details
+            song = Song(track_name="Shape of You", artist_name="Ed Sheeran", genre="Pop")
 
-			# Creating a song with only track name
-			song = Song(track_name="Unknown Song")
-			```
+            # Creating a song with only track name
+            song = Song(track_name="Unknown Song")
+            ```
 
-		Args:
-			track_name (str): The name of the song.
-			artist_name (str, optional): The name of the artist. Defaults to None if unknown.
-			genre (str, optional): The genre of the song. Defaults to None if unspecified.
-		"""
-		self.track_name = track_name  # The title of the song
-		self.artist_name = artist_name  # The artist who performed the song
-		self.genre = genre  # The genre of the song
+        Args:
+            track_name (str): The name of the song.
+            artist_name (str, optional): The name of the artist. Defaults to None if unknown.
+            genre (str, optional): The genre of the song. Defaults to None if unspecified.
+        """
+        self.track_name = track_name  # The title of the song
+        self.artist_name = artist_name  # The artist who performed the song
+        self.genre = genre  # The genre of the song
+        self.url = url # The URL of the song retrieved from YouTube
 
-	def __str__(self):
-		"""
-		What:
-			Provides a human-readable string representation of the `Song` instance, formatted to include both the track name and the artist name if available.
+    def __str__(self):
+        """
+        What:
+            Provides a human-readable string representation of the `Song` instance, formatted to include both the track name and the artist name if available.
 
-		Why:
-			A clear and concise string representation is essential for displaying song information in user interfaces, logs, and other outputs. It enhances readability and ensures that users can easily identify and differentiate between songs.
+        Why:
+            A clear and concise string representation is essential for displaying song information in user interfaces, logs, and other outputs. It enhances readability and ensures that users can easily identify and differentiate between songs.
 
-		How:
-			- If the `artist_name` attribute is provided, the method returns a string in the format "`<track_name> by <artist_name>`".
-			- If the `artist_name` is not provided (`None`), it returns just the `track_name`.
+        How:
+            - If the `artist_name` attribute is provided, the method returns a string in the format "`<track_name> by <artist_name>`".
+            - If the `artist_name` is not provided (`None`), it returns just the `track_name`.
 
-		Example:
-			```python
-			song_with_artist = Song(track_name="Yesterday", artist_name="The Beatles")
-			print(song_with_artist)  # Output: Yesterday by The Beatles
+        Example:
+            ```python
+            song_with_artist = Song(track_name="Yesterday", artist_name="The Beatles")
+            print(song_with_artist)  # Output: Yesterday by The Beatles
 
-			song_without_artist = Song(track_name="Unknown Track")
-			print(song_without_artist)  # Output: Unknown Track
-			```
+            song_without_artist = Song(track_name="Unknown Track")
+            print(song_without_artist)  # Output: Unknown Track
+            ```
 
-		Returns:
-			str: The string representation of the song.
-		"""
-		if self.artist_name is None:
-			return self.track_name  # Return just the track name if artist is unknown
-		else:
-			# Return 'track by artist' format if artist is known
-			return f"{self.track_name} by {self.artist_name}"
+        Returns:
+            str: The string representation of the song.
+        """
+        if self.artist_name is None:
+            return self.track_name  # Return just the track name if artist is unknown
+        else:
+            # Return 'track by artist' format if artist is known
+            return f"{self.track_name} by {self.artist_name}"
