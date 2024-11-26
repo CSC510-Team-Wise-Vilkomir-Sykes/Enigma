@@ -51,7 +51,7 @@ from src.utils import searchSong
 import schedule
 from src.scraper import initial_scrape, update_charts
 
-from src.eda import get_top_songs, get_top_artists, get_longest_charting_songs, get_all
+from src.eda import get_top_songs, get_top_artists, get_longest_charting_songs
 
 # Load environment variables from .env file
 load_dotenv(".env")
@@ -139,7 +139,7 @@ async def on_message(message):
             1] == "add":
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
-            await message.channel.send(response)
+        await message.channel.send(response)
 
     elif message.content.startswith('!top_artists'):
         df = get_top_artists(sqlite3.connect("songs.db"))
@@ -150,7 +150,7 @@ async def on_message(message):
         await message.channel.send(response)
 
     elif message.content.startswith('!longest_charting'):
-        df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
+        df = get_longest_charting_songs(sqlite3.connect("songs.db"))
         response = "Longest-Charting Songs:\n" + "\n".join(
             f"{i + 1}. {row['title']} by {row['artist']} ({row['weeks_on_chart']} "
             f"weeks)"
