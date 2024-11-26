@@ -14,7 +14,8 @@
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/issues?q=is%3Aissue+is%3Aopen)
 [![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/pulls?q=is%3Apr+is%3Aopen)
 [![Supports Python](https://img.shields.io/pypi/pyversions/pytest)](https://www.python.org/)
-{need doi badge}
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14225873.svg)](https://doi.org/10.5281/zenodo.14225873)
+
 Code coverage (develop):[![Running Code Coverage](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml)
 Syntax checker and code formatter: [![Code checker](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml)
 Style checker: [![Style Check](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml/badge.svg?branch=develop)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml)
