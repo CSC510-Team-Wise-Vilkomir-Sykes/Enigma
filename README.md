@@ -119,13 +119,6 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 
 ---
 
-## **📹 Showcase Videos**
-
-### [Why Choose This Project?](https://youtu.be/HvIVuy2wMXY)
-### [Feature Showcase](https://youtu.be/fvlnV4p7qdk)
-
----
-
 ## **📍Roadmap**
 
 ### Completed:
