@@ -17,7 +17,6 @@ and poll generation.
 """
 
 import pandas as pd
-import random
 
 
 def filtered_songs():

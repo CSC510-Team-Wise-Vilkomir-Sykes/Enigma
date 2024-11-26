@@ -110,7 +110,8 @@ class BotState:
 	@classmethod
 	def pause(cls, voice_client):
 		"""
-		Pauses playback if a song is currently playing and the bot is connected to a voice channel.
+		Pauses playback if a song is currently playing and the bot is connected
+        to a voice channel.
 
 		:param voice_client: The Discord voice client instance.
 		:type voice_client: VoiceClient

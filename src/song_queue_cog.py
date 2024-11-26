@@ -120,17 +120,15 @@ Notes:
 import asyncio
 from multiprocessing.forkserver import set_forkserver_preload
 from urllib.parse import urljoin
+import random
 
 import discord
-from discord.ext.commands import bot
+
 
 from src.bot_state import BotState
-from src.get_all import *
-from dotenv import load_dotenv
 from discord.ext import commands
 
 from src.song import Song
-from src.utils import searchSong, random_25
 import yt_dlp as youtube_dl
 
 from io import BytesIO
@@ -362,7 +360,8 @@ class SongQueueCog(commands.Cog):
 			if BotState.is_in_voice_channel(voice_client):
 				if voice_client.channel == user_channel:
 					await BotState.log_and_send(
-						ctx, f"I am already in this voice channel ({user_channel.name})"
+						ctx,
+						f"I am already in this voice channel ({user_channel.name})"
 					)
 				else:
 					# Move to the new channel
@@ -445,7 +444,8 @@ class SongQueueCog(commands.Cog):
 				else:
 					await BotState.log_and_send(ctx, "I am already paused")
 			else:
-				await BotState.log_and_send(ctx, "I am currently not playing anything")
+				await BotState.log_and_send(ctx,
+											"I am currently not playing anything")
 		else:
 			await BotState.log_and_send(
 				ctx, "I am currently not connected to a voice channel"
@@ -482,7 +482,8 @@ class SongQueueCog(commands.Cog):
 				else:
 					await BotState.log_and_send(ctx, "I am already unpaused")
 			else:
-				await BotState.log_and_send(ctx, "I am currently not playing anything")
+				await BotState.log_and_send(ctx,
+                                            "I am currently not playing anything")
 		else:
 			await BotState.log_and_send(
 				ctx, "I am currently not connected to a voice channel"
@@ -901,7 +902,8 @@ class SongQueueCog(commands.Cog):
 			next_song = BotState.song_queue.pop(0)
 			await self.play_song(ctx, next_song)
 
-	@commands.command(name="view", help="Show current queue and currently playing song")
+	@commands.command(name="view",
+                      help="Show current queue and currently playing song")
 	async def view(self, ctx):
 		"""
 		What:
@@ -1016,7 +1018,8 @@ class SongQueueCog(commands.Cog):
 
 	@commands.command(
 		name="move",
-		help="Move a song from one position to anotherin the queue",
+		help="Move a song from one position to another in "
+             "the queue",
 	)
 	async def move(self, ctx, *, params):
 		"""
@@ -1044,7 +1047,8 @@ class SongQueueCog(commands.Cog):
 		"""
 		src_idx, dest_idx = params.split(" ", maxsplit=1)
 
-		# dest_idx is ensured as a track number (0 < idx < size) and not as an insertion number (0 < idx <= size)
+		# dest_idx is ensured as a track number (0 < idx < size) and not as an
+        # insertion number (0 < idx <= size)
 		# this is because when we can only move it to a maximum index of size-1
 		safe_dest_idx = await self.ensure_track_number(ctx, dest_idx)
 		if safe_dest_idx is not None:
@@ -1055,7 +1059,8 @@ class SongQueueCog(commands.Cog):
 				if await self.insert_song(ctx, dest_idx, moved_song):
 					await BotState.log_and_send(
 						ctx,
-						f"Moved {moved_song} from track {src_idx} to track {dest_idx}",
+						f"Moved {moved_song} from track {src_idx} to track "
+                        f"{dest_idx}",
 					)
 
 	@commands.command(
@@ -1090,7 +1095,8 @@ class SongQueueCog(commands.Cog):
 				ctx, f"Removed {removed_song} (track number {idx})"
 			)
 
-	@commands.command(name="movefront", help="Move a song to the front of the queue")
+	@commands.command(name="movefront",
+                      help="Move a song to the front of the queue")
 	async def movefront(self, ctx, *, src_idx):
 		"""
 		What:
@@ -1145,7 +1151,8 @@ class SongQueueCog(commands.Cog):
 		await self.move(ctx, params=f"{src_idx} {len(BotState.song_queue)}")
 
 	@commands.command(
-		name="replay", help="Replay the currently playing song once after it ends"
+		name="replay",
+        help="Replay the currently playing song once after it ends"
 	)
 	async def replay(self, ctx):
 		"""
@@ -1177,7 +1184,8 @@ class SongQueueCog(commands.Cog):
 			else:
 				await self.insert_song(ctx, 1, BotState.current_song_playing)
 				await BotState.log_and_send(
-					ctx, "Got it, I will add this song to the front of the queue again"
+					ctx,
+                    "Got it, I will add this song to the front of the queue again"
 				)
 
 	@commands.command(
