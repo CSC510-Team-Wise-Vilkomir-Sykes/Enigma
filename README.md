@@ -1,10 +1,14 @@
-<h1 align="center">
- ✨ ♬  ᴇɴɪɢᴍᴀ ♬  ✨  **Your Ultimate Music Recommender Bot for Discord**
-
- [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
+<h1 align="center" style="font-family: Arial, sans-serif; color: #4B0082;">
+  ✨ ♬ ᴇɴɪɢᴍᴀ ♬ ✨  
+  <br>
+  <small style="font-weight: 300;">Your Ultimate Music Recommender Bot for Discord</small>
 </h1>
 
 <div align="center">
+  <a href="https://github.com/ellerbrock/open-source-badges/">
+    <img src="https://badges.frapsoft.com/os/v3/open-source.png?v=103" alt="Open Source Love" style="margin: 10px; height: 30px;">
+  </a>
+</div>
 
 [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![GitHub Release](https://img.shields.io/github/release/CSC510-Team-Wise-Vilkomir-Sykes/Enigma.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/releases)
