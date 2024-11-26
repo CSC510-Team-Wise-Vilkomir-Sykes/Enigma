@@ -30,6 +30,9 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 
 ---
 
+## **Why Enigma?**
+> https://youtu.be/hOm4ca4YgeQ
+
 ## **Features**
 
 - Recommends songs based on user input and plays them in Discord voice channels.
@@ -53,6 +56,9 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 
 
 ## **Group 6 Contributions**
+
+### **Video of our additions:**
+> https://youtu.be/eta7pT2b0v4
 
 ### **Improvements and Features Added**
 
