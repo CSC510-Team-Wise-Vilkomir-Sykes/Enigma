@@ -61,6 +61,9 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 ### **Video of our additions:**
 > https://youtu.be/eta7pT2b0v4
 
+https://github.com/user-attachments/assets/0723f5ae-83d0-4749-8181-24f7c5bd4735
+
+
 ### **Improvements and Features Added**
 
 1. **Preloading Songs in Queue:**
