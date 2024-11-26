@@ -1,5 +1,5 @@
 <h1 align="center" style="font-family: Arial, sans-serif; color: #4B0082;">
-  ✨ ♬ ᴇɴɪɢᴍᴀ ♬ ✨  
+  ✨ ♬ ᴇɴɪɢᴍᴀ ♬ ✨
   <br>
   <small style="font-weight: 300;">Your Ultimate Music Recommender Bot for Discord</small>
 </h1>
@@ -158,5 +158,5 @@ The project dataset is available [here](https://www.kaggle.com/datasets/saurabhs
 
 ## **Support**
 
-For bugs or feature requests, use GitHub’s issue tracker or email the contributors.
+For bugs or feature requests, use GitHub’s issue tracker or email the contributors!
 

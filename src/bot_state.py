@@ -1,5 +1,5 @@
 """
-bot_state.py
+bot_state.py file
 
 This module defines the `BotState` class, which manages the shared state of the Discord bot's music playback,
 including the song queue, playback status, and logging.
