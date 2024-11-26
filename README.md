@@ -1,6 +1,5 @@
 <h1 align="center">
-# ✨ ♬  ᴇɴɪɢᴍᴀ ♬  ✨
-**Your Ultimate Music Recommender Bot for Discord**
+ ✨ ♬  ᴇɴɪɢᴍᴀ ♬  ✨  **Your Ultimate Music Recommender Bot for Discord**
 
  [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </h1>
@@ -127,7 +126,7 @@ https://github.com/user-attachments/assets/0723f5ae-83d0-4749-8181-24f7c5bd4735
 
 ## **📖 Documentation**
 
-Find the full documentation [here]([https://saswat123.github.io/Enigma/](https://csc510-team-wise-vilkomir-sykes.github.io/Enigma-docs/)).
+Find the full documentation [here](https://csc510-team-wise-vilkomir-sykes.github.io/Enigma-docs/).
 
 ---
 
