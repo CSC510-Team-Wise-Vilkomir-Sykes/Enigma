@@ -39,7 +39,6 @@ import discord
 from src.bot_state import BotState
 from src.recommend_cog import RecommendCog
 from src.song_queue_cog import SongQueueCog
-from src.song_queue_cog import SongQueueCog
 from src.utils import searchSong
 
 import schedule
@@ -119,10 +118,6 @@ async def on_message(message):
     if message.author == client.user:
         return  # Ignore messages sent by the bot itself
 
-    # Process commands only in channels that start with "general"
-    if message.channel.name.startswith("general"):
-        await client.process_commands(message)  # Process commands issued in messages
-
     if message.content.startswith('!top_songs'):
         df = get_top_songs(sqlite3.connect("../songs.db"))
         response = "Top 10 Popular Songs:\n" + "\n".join(
@@ -158,6 +153,10 @@ async def on_message(message):
             for i, row in df.iterrows():
                 BotState.song_queue.insert(-1, row['title'])
         await message.channel.send(response)
+
+    # Process commands only in channels that start with "general"
+    if message.channel.name.startswith("general"):
+        await client.process_commands(message)  # Process commands issued in messages
 
 @client.event
 async def on_voice_state_update(member, before, after):

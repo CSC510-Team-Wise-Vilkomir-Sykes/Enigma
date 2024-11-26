@@ -798,7 +798,9 @@ class SongQueueCog(commands.Cog):
 			)
 			BotState.current_song_playing = song
 
-			await BotState.log_and_send(ctx, f"Now playing: **{song}**")
+			song_name = song.title if song.title is not None else song
+
+			await BotState.log_and_send(ctx, f"Now playing: **{song_name}**")
 			await self.preload_songs(ctx)  # Preload after starting to play
 		else:
 			await BotState.log_and_send(
@@ -1320,6 +1322,7 @@ class SongQueueCog(commands.Cog):
 					url = info["url"]
 
 					song.url = url
+					song.title = info["title"]
 
 					# # Asynchronously download the audio data
 					# async with aiohttp.ClientSession() as session:
