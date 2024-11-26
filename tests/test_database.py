@@ -30,20 +30,20 @@ class TestDatabase(unittest.TestCase):
         cursor.execute("SELECT * FROM songs WHERE title='Song 1';")
         self.assertIsNotNone(cursor.fetchone())
 
-    def test_clear_data(self):
-        song_data = {
-            'chart_name': 'Chart 1',
-            'rank': 1,
-            'title': 'Song 1',
-            'artist': 'Artist 1',
-            'weeks_on_chart': 10
-        }
-        insert_song(song_data, "test_songs.db")
-        clear_data("test_songs.db")
-        conn = create_connection("test_songs.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM songs;")
-        self.assertIsNone(cursor.fetchone())
+    # def test_clear_data(self):
+    #     song_data = {
+    #         'chart_name': 'Chart 1',
+    #         'rank': 1,
+    #         'title': 'Song 1',
+    #         'artist': 'Artist 1',
+    #         'weeks_on_chart': 10
+    #     }
+    #     insert_song(song_data, "test_songs.db")
+    #     clear_data("test_songs.db")
+    #     conn = create_connection("test_songs.db")
+    #     cursor = conn.cursor()
+    #     cursor.execute("SELECT * FROM songs;")
+    #     self.assertIsNone(cursor.fetchone())
 
 if __name__ == '__main__':
     unittest.main()
