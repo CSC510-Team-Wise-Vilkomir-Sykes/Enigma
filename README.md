@@ -20,7 +20,7 @@
 [![Supports Python](https://img.shields.io/pypi/pyversions/pytest)](https://www.python.org/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14225873.svg)](https://doi.org/10.5281/zenodo.14225873)
 
-Code coverage (develop):[![codecov](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/codecov.yml)
+Code coverage (develop):[![codecov](https://codecov.io/gh/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/graph/badge.svg?token=26ERN0JGPA)](https://codecov.io/gh/CSC510-Team-Wise-Vilkomir-Sykes/Enigma)
 Syntax checker and code formatter: [![Code checker](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/code-formatter.yml)
 Style checker: [![Style Check](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml/badge.svg?branch=develop)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/style-checker.yml)
 Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes/Enigma/actions/workflows/github-actions-build.yml)
