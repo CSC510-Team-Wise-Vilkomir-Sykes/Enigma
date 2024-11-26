@@ -33,6 +33,7 @@ Run unit tests: [![Run Tests](https://github.com/CSC510-Team-Wise-Vilkomir-Sykes
 
 ## **Why Enigma?**
 > https://youtu.be/hOm4ca4YgeQ
+[![YouTube](http://i.ytimg.com/vi/hOm4ca4YgeQ/hqdefault.jpg)](https://www.youtube.com/watch?v=hOm4ca4YgeQ)
 
 ## **Features**
 
