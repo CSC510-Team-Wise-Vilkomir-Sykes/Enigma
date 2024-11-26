@@ -104,8 +104,12 @@ async def initial_scrape():
 
     # Clear existing data and create the table
 
-    clear_data()
+    try:
+        clear_data()
+    except Exception as e:
+        print(f"Table doesn't exist, continuing without clearing")
     create_table()  # Scrape each chart and insert songs into the database
+
     for chart_link in chart_links:
         print(f"Scraping chart: {chart_link}")
         songs = scrape_chart(chart_link)
