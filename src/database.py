@@ -6,8 +6,8 @@ def create_connection(db_file="songs.db"):
     return conn
 
 
-def create_table():
-    conn = create_connection()
+def create_table(db_file="songs.db"):
+    conn = create_connection(db_file)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS songs (
@@ -23,8 +23,8 @@ def create_table():
     conn.close()
 
 
-def insert_song(data):
-    conn = create_connection()
+def insert_song(data, db_file="songs.db"):
+    conn = create_connection(db_file)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO songs (chart_name, rank, title, artist, weeks_on_chart)
@@ -35,8 +35,8 @@ def insert_song(data):
     conn.close()
 
 
-def clear_data():
-    conn = create_connection()
+def clear_data(db_file="songs.db"):
+    conn = create_connection(db_file)
     cursor = conn.cursor()
     cursor.execute('DELETE FROM songs')
     conn.commit()
