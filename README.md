@@ -1,5 +1,6 @@
 <h1 align="center">
-  Enigma 🤖 - A music recommender bot for Discord
+# ✨ ♬  ᴇɴɪɢᴍᴀ ♬  ✨
+**Your Ultimate Music Recommender Bot for Discord**
 
  [![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 </h1>
@@ -124,26 +125,9 @@ https://github.com/user-attachments/assets/0723f5ae-83d0-4749-8181-24f7c5bd4735
 
 ---
 
-## **📍Roadmap**
-
-### Completed:
-1. Dynamic queuing and replay options.
-2. Advanced queue management (insert, move, delete).
-3. Multi-channel support with consistent internal state.
-4. Enhanced recommendation logic based on artists/genres.
-5. EDA features integrated for music insights.
-6. Web scraping functionality for periodic music chart updates.
-
-### Planned:
-1. Seamless transitions with preloaded songs.
-2. Auto-updating song recommendation database.
-3. Improved sound quality with Discord’s volume adjuster.
-
----
-
 ## **📖 Documentation**
 
-Find the full documentation [here](https://saswat123.github.io/Enigma/).
+Find the full documentation [here]([https://saswat123.github.io/Enigma/](https://csc510-team-wise-vilkomir-sykes.github.io/Enigma-docs/)).
 
 ---
 
