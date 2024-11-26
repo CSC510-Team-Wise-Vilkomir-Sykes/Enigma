@@ -23,11 +23,11 @@ features and responsive user interactions on Discord.
 - Authenticate using a Discord bot token.
 
 Modules:
-	- BotState: Manages the state of the bot, including logging and audio playback
-	control.
-	- RecommendCog: A cog that provides song recommendation and polling commands.
-	- SongQueueCog: A cog that handles song queueing operations.
-	- searchSong: Utility function for song search.
+    - BotState: Manages the state of the bot, including logging and audio playback
+    control.
+    - RecommendCog: A cog that provides song recommendation and polling commands.
+    - SongQueueCog: A cog that handles song queueing operations.
+    - searchSong: Utility function for song search.
 """
 
 import asyncio
@@ -64,9 +64,9 @@ client = commands.Bot(command_prefix="/", intents=intents)
 
 # Background task for scheduling
 async def schedule_task():
-	while True:
-		schedule.run_pending()
-		await asyncio.sleep(3600)  # Check every hour for scheduled tasks
+    while True:
+        schedule.run_pending()
+        await asyncio.sleep(3600)  # Check every hour for scheduled tasks
 
 
 # Command to start the bot's update scheduler
@@ -81,26 +81,26 @@ async def on_ready():
     - Initializes the bot by loading essential cogs.
     - Sets up logging for state tracking and error reporting.
 
-			**Why**: Ensures the bot is fully prepared for interaction, with all necessary functionality initialized.
+            **Why**: Ensures the bot is fully prepared for interaction, with all necessary functionality initialized.
 
     **How**:
     - Load `SongQueueCog` and `RecommendCog` to handle music queueing and recommendations.
     - Log the bot's readiness for debugging or tracking
-			purposes.
-	"""
-	print(f'Logged in as {client.user}')
+            purposes.
+    """
+    print(f'Logged in as {client.user}')
 
-	await SongQueueCog.setup(client)  # Initialize the song queue cog
-	await RecommendCog.setup(client)  # Initialize the recommendation cog
-	BotState.logger = logging.getLogger("discord")  # Set up bot state logging
+    await SongQueueCog.setup(client)  # Initialize the song queue cog
+    await RecommendCog.setup(client)  # Initialize the recommendation cog
+    BotState.logger = logging.getLogger("discord")  # Set up bot state logging
 
-	# Define the scraping schedule (e.g., every day at midnight)
-	await initial_scrape()
+    # Define the scraping schedule (e.g., every day at midnight)
+    await initial_scrape()
 
-	# Define the scraping schedule (e.g., every day at midnight)
-	schedule.every().day.at("00:00").do(update_charts)
-	# Start the background task for scheduling
-	client.loop.create_task(schedule_task())
+    # Define the scraping schedule (e.g., every day at midnight)
+    schedule.every().day.at("00:00").do(update_charts)
+    # Start the background task for scheduling
+    client.loop.create_task(schedule_task())
 
 @client.event
 async def on_message(message):
@@ -124,7 +124,7 @@ async def on_message(message):
     if message.author == client.user:
         return  # Ignore messages sent by the bot itself
 
-	# Process commands only in channels that start with "general"
+    # Process commands only in channels that start with "general"
     if message.channel.name.startswith("general"):
         await client.process_commands(message)  # Process commands issued in messages
 
@@ -141,13 +141,13 @@ async def on_message(message):
                 BotState.song_queue.insert(-1, row['title'])
             await message.channel.send(response)
 
-	elif message.content.startswith('!top_artists'):
-		df = get_top_artists(sqlite3.connect("songs.db"))
-		response = "Top 10 Artists by Frequency:\n" + "\n".join(
-			f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in
-			df.iterrows()
-		)
-		await message.channel.send(response)
+    elif message.content.startswith('!top_artists'):
+        df = get_top_artists(sqlite3.connect("songs.db"))
+        response = "Top 10 Artists by Frequency:\n" + "\n".join(
+            f"{i + 1}. {row['artist']}: {row['count']} songs" for i, row in
+            df.iterrows()
+        )
+        await message.channel.send(response)
 
     elif message.content.startswith('!longest_charting'):
         df = get_longest_charting_songs(sqlite3.connect("../songs.db"))
